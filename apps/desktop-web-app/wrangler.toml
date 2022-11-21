@@ -1,4 +1,4 @@
-name = "puddle-dev"
+name = "puddle"
 
 workers_dev = true
 main = "./build/index.js"
