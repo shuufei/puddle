@@ -2,26 +2,41 @@ import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
 import { useCallback } from 'react';
-import { getSupabaseForBrowser } from '~/libs/supabase-client';
+import type { Folder } from '~/domain/folder';
+import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
+import { getFolders } from '~/libs/supabase/db.server';
+import { getSupabaseForBrowser } from '~/libs/supabase/supabase-client';
 import { useSetCookieIfNeeded } from '~/shared/hooks/use-set-cookie-if-needed';
 
 type LoadData = {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
-  endpoint: string;
+  env: {
+    supabaseUrl: string;
+    supabaseAnonKey: string;
+    endpoint: string;
+  };
+  folders: Folder[];
 };
 
-export const loader: LoaderFunction = () => {
+export const loader: LoaderFunction = async ({ request }) => {
+  const { userId } = await getRequestUserId(request);
+  const res = await getFolders(userId);
   const data: LoadData = {
-    supabaseUrl: NEXT_PUBLIC_SUPABASE_URL,
-    supabaseAnonKey: NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    endpoint: ENDPOINT,
+    env: {
+      supabaseUrl: NEXT_PUBLIC_SUPABASE_URL,
+      supabaseAnonKey: NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      endpoint: ENDPOINT,
+    },
+    folders: res.data.data as Folder[],
   };
   return json(data);
 };
 
 export default function Index() {
-  const { supabaseUrl, supabaseAnonKey, endpoint } = useLoaderData<LoadData>();
+  const {
+    env: { supabaseUrl, supabaseAnonKey, endpoint },
+    folders,
+  } = useLoaderData<LoadData>();
+  console.log('--- folders: ', folders);
   useSetCookieIfNeeded(endpoint);
 
   const signInWithGoogle = useCallback(async () => {

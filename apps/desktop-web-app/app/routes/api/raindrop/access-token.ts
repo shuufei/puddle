@@ -1,5 +1,10 @@
-import type { CookieOptions, LoaderFunction } from '@remix-run/cloudflare';
-import { createCookie, redirect } from '@remix-run/cloudflare';
+import type { LoaderFunction } from '@remix-run/cloudflare';
+import { redirect } from '@remix-run/cloudflare';
+import {
+  raindropAccessTokenCookie,
+  raindropRefreshTokenCookie,
+  raindropTokenType,
+} from '~/features/auth/cookies';
 
 type GetAccessTokenResponse = {
   access_token: string;
@@ -8,22 +13,6 @@ type GetAccessTokenResponse = {
   expires_in: number;
   token_type: string;
 };
-
-const cookieOptions: CookieOptions = {
-  httpOnly: true,
-  path: '/',
-  sameSite: 'lax',
-  secure: true,
-};
-export const raindropAccessTokenCookie = createCookie(
-  'RainAccessToken',
-  cookieOptions
-);
-const raindropRefreshTokenCookie = createCookie(
-  'RainRefreshToken',
-  cookieOptions
-);
-const raindropTokenType = createCookie('RaindropTokenType', cookieOptions);
 
 export const loader: LoaderFunction = async ({ request }) => {
   const clientId = RAINDROP_CLIENT_ID;

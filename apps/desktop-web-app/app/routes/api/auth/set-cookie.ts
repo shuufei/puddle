@@ -1,5 +1,9 @@
-import type { ActionFunction, CookieOptions } from '@remix-run/cloudflare';
-import { createCookie } from '@remix-run/cloudflare';
+import type { ActionFunction } from '@remix-run/cloudflare';
+import {
+  accessTokenCookie,
+  refreshTokenCookie,
+  tokenTypeCookie,
+} from '~/features/auth/cookies';
 
 const parseToken = (
   hash: string
@@ -24,16 +28,6 @@ const parseToken = (
     tokenType,
   };
 };
-
-const cookieOptions: CookieOptions = {
-  httpOnly: true,
-  path: '/',
-  sameSite: 'lax',
-  secure: true,
-};
-export const accessTokenCookie = createCookie('AccessToken', cookieOptions);
-const refreshTokenCookie = createCookie('RefreshToken', cookieOptions);
-const tokenTypeCookie = createCookie('TokenType', cookieOptions);
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.json<{ hash: string }>();
