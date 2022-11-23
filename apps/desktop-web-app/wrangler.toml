@@ -5,6 +5,10 @@ main = "./build/index.js"
 # https://developers.cloudflare.com/workers/platform/compatibility-dates
 compatibility_date = "2022-04-05"
 
+[vars]
+ENDPOINT = "http://localhost:4200"
+
+
 [site]
   bucket = "./public"
 
