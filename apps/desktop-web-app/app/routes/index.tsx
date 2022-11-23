@@ -23,6 +23,7 @@ export const loader: LoaderFunction = () => {
 export default function Index() {
   const { supabaseUrl, supabaseAnonKey, endpoint } = useLoaderData<LoadData>();
   useSetCookieIfNeeded(endpoint);
+
   const signInWithGoogle = useCallback(async () => {
     const supabase = getSupabaseForBrowser(supabaseUrl, supabaseAnonKey);
     await supabase.auth.signInWithOAuth({
@@ -33,18 +34,31 @@ export default function Index() {
     });
   }, [endpoint, supabaseAnonKey, supabaseUrl]);
 
+  const integrateRaindrop = useCallback(() => {
+    location.href = '/api/raindrop/authorize';
+    return;
+  }, []);
+
   return (
     <main>
       <h1>Puddle</h1>
       <p>desktop web app</p>
       <section className="p-4">
         <h2>Auth</h2>
-        <button
-          className="bg-blue-600 px-3 py-2 rounded-sm text-white"
-          onClick={signInWithGoogle}
-        >
-          sign in with google
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="bg-green-600 px-3 py-2 rounded-sm text-white"
+            onClick={signInWithGoogle}
+          >
+            sign in with google
+          </button>
+          <button
+            className="bg-blue-600 px-3 py-2 rounded-sm text-white"
+            onClick={integrateRaindrop}
+          >
+            integrate Raindrop
+          </button>
+        </div>
       </section>
     </main>
   );
