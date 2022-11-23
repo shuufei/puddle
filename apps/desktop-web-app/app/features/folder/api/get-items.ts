@@ -7,6 +7,10 @@ import { RAINDROP_API_ENDPOINT } from '~/libs/raindrop/endpoint';
 import { getAuthorizedHeader } from '~/libs/raindrop/get-authorized-header';
 import { getSupabaseForServer } from '~/libs/supabase/supabase-server-client.server';
 
+type GetFolderItemsResponse = {
+  items: Item[];
+};
+
 const getUrl = (
   collectionId: Collection['id'],
   search: string,
@@ -26,7 +30,7 @@ export const getFolderItems = async (
     userId: User['id'];
     raindropAccessToken: string;
   }
-) => {
+): Promise<GetFolderItemsResponse> => {
   const { userId, raindropAccessToken } = context;
   const supabase = getSupabaseForServer();
   const data = await supabase
@@ -40,6 +44,13 @@ export const getFolderItems = async (
     throw new Error('Not Found');
   }
 
+  const cacheKey = `users/${userId}/folder/${folderId}/items`;
+  const cacheData = await RAINDROP_CACHE.get<GetFolderItemsResponse>(cacheKey, {
+    type: 'json',
+  });
+  if (cacheData != null) {
+    return cacheData;
+  }
   const collectionId = folder.collectionId ?? 0;
   const conditions = [
     folder.tags.map((v) => `#"${v}"`).join(' '),
@@ -85,6 +96,9 @@ export const getFolderItems = async (
       items = [...items, ..._body.items];
     }
   }
-
-  return { items };
+  const response: GetFolderItemsResponse = { items };
+  await RAINDROP_CACHE.put(cacheKey, JSON.stringify(response), {
+    expirationTtl: 60 * 60 * 24,
+  });
+  return response;
 };

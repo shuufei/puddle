@@ -4,3 +4,4 @@ declare const SUPABASE_SERVICE_KEY: string;
 declare const RAINDROP_CLIENT_ID: string;
 declare const RAINDROP_CLIENT_SECRET: string;
 declare const ENDPOINT: string;
+declare const RAINDROP_CACHE: KVNamespace;

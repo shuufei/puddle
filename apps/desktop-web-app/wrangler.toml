@@ -5,6 +5,10 @@ main = "./build/index.js"
 # https://developers.cloudflare.com/workers/platform/compatibility-dates
 compatibility_date = "2022-04-05"
 
+kv_namespaces = [
+  { binding = "RAINDROP_CACHE", id = "1af025d4e6bb4aca9206d07805d02558" }
+]
+
 [vars]
 ENDPOINT = "http://localhost:4200"
 
