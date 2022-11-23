@@ -1,4 +1,4 @@
-import { getSupabaseForServer } from './supabase-server-client.server';
+import { getSupabaseForServer } from '~/libs/supabase/supabase-server-client.server';
 
 export const getFolders = async (userId: string) => {
   const supabase = getSupabaseForServer();

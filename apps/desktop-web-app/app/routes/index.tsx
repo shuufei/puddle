@@ -4,11 +4,11 @@ import { useLoaderData } from '@remix-run/react';
 import { useCallback } from 'react';
 import type { Folder } from '~/domain/folder';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
-import { getFolders } from '~/libs/supabase/db.server';
+import { getFolders } from '~/features/folder/api/get-folders';
 import { getSupabaseForBrowser } from '~/libs/supabase/supabase-client';
 import { useSetCookieIfNeeded } from '~/shared/hooks/use-set-cookie-if-needed';
 
-type LoadData = {
+type LoaderData = {
   env: {
     supabaseUrl: string;
     supabaseAnonKey: string;
@@ -20,7 +20,7 @@ type LoadData = {
 export const loader: LoaderFunction = async ({ request }) => {
   const { userId } = await getRequestUserId(request);
   const res = await getFolders(userId);
-  const data: LoadData = {
+  const data: LoaderData = {
     env: {
       supabaseUrl: NEXT_PUBLIC_SUPABASE_URL,
       supabaseAnonKey: NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -35,7 +35,7 @@ export default function Index() {
   const {
     env: { supabaseUrl, supabaseAnonKey, endpoint },
     folders,
-  } = useLoaderData<LoadData>();
+  } = useLoaderData<LoaderData>();
   console.log('--- folders: ', folders);
   useSetCookieIfNeeded(endpoint);
 
