@@ -1,3 +1,4 @@
+import { Link } from '@remix-run/react';
 import type { FC } from 'react';
 import { memo, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder as FolderIcon } from 'react-feather';
@@ -35,11 +36,15 @@ export const NavigationItem: FC<{
             <div className="w-4 h-4"></div>
           </div>
         )}
-
-        <div className="flex gap-1.5 items-center text-gray-900">
+        <Link
+          to={`/folders/${folderState.data.id}`}
+          className="flex gap-1.5 items-center text-gray-900 flex-1"
+        >
           <FolderIcon size={'1.25rem'} />
-          <p className="text-sm font-semibold">{folderState.data.title}</p>
-        </div>
+          <p className="text-sm font-semibold whitespace-nowrap">
+            {folderState.data.title}
+          </p>
+        </Link>
       </div>
       {opened && subFolderStates.length > 0 && (
         <div className="pl-6 mt-0.5">
