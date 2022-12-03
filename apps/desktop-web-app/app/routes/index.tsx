@@ -4,7 +4,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useCallback } from 'react';
 import type { Folder } from '~/domain/folder';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
-import { getFolders } from '~/features/folder/api/get-folders';
+import { getFolders } from '~/features/folder/api/get-folders.server';
 import { getSupabaseForBrowser } from '~/libs/supabase/supabase-client';
 import { useSetCookieIfNeeded } from '~/shared/hooks/use-set-cookie-if-needed';
 

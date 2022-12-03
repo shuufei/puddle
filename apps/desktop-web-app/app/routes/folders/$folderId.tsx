@@ -3,9 +3,9 @@ import { json } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
 import type { FC } from 'react';
 import type { Item } from '~/domain/raindrop/item';
-import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token';
+import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
-import { getFolderItems } from '~/features/folder/api/get-items';
+import { getFolderItems } from '~/features/folder/api/get-items.server';
 
 type LoaderData = {
   items: Item[];

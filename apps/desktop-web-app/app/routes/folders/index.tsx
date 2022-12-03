@@ -4,7 +4,7 @@ import { Link, useLoaderData } from '@remix-run/react';
 import type { FC } from 'react';
 import type { Folder } from '~/domain/folder';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
-import { getFolders } from '~/features/folder/api/get-folders';
+import { getFolders } from '~/features/folder/api/get-folders.server';
 
 type LoaderData = {
   folders: Folder[];
