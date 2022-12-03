@@ -16,7 +16,7 @@ export const FolderListNavigation: FC<{
     <ul>
       {folderStates.map((folder) => {
         return (
-          <li key={folder.data.id} className="mb-0.5">
+          <li key={folder.data.id} className="mb-1">
             <NavigationItem
               folderState={folder}
               allFolderStates={allFolderStates}

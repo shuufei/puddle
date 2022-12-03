@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { NavLink } from '@remix-run/react';
 import type { FC } from 'react';
 import { memo, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder as FolderIcon } from 'react-feather';
@@ -17,11 +17,21 @@ export const NavigationItem: FC<{
   }, [allFolderStates, folderState.data.id]);
   return (
     <>
-      <div className="flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm">
+      <NavLink
+        to={`/folders/${folderState.data.id}`}
+        className={({ isActive }) => {
+          const common =
+            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm border-solid border';
+          return isActive
+            ? `${common} bg-gray-100 border-gray-900`
+            : `${common} border-transparent`;
+        }}
+      >
         {subFolderStates.length > 0 ? (
           <button
             className="text-sm p-0.5 text-gray-900 hover:text-white hover:bg-gray-900 rounded-sm"
-            onClick={() => {
+            onClick={(event) => {
+              event.preventDefault();
               setOpened(!opened);
             }}
           >
@@ -32,22 +42,19 @@ export const NavigationItem: FC<{
             )}
           </button>
         ) : (
-          <div className="p-1">
+          <div className="p-0.5">
             <div className="w-4 h-4"></div>
           </div>
         )}
-        <Link
-          to={`/folders/${folderState.data.id}`}
-          className="flex gap-1.5 items-center text-gray-900 flex-1"
-        >
+        <div className="flex gap-1.5 items-center text-gray-900 flex-1">
           <FolderIcon size={'1.25rem'} />
           <p className="text-sm font-semibold whitespace-nowrap">
             {folderState.data.title}
           </p>
-        </Link>
-      </div>
+        </div>
+      </NavLink>
       {opened && subFolderStates.length > 0 && (
-        <div className="pl-6 mt-0.5">
+        <div className="pl-6 mt-1">
           <FolderListNavigation
             folderStates={subFolderStates}
             allFolderStates={allFolderStates}
