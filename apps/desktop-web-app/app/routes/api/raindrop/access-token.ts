@@ -3,6 +3,7 @@ import { redirect } from '@remix-run/cloudflare';
 import {
   raindropAccessTokenCookie,
   raindropRefreshTokenCookie,
+  raindropTokenExpires,
   raindropTokenType,
 } from '~/features/auth/cookies';
 
@@ -51,6 +52,13 @@ export const loader: LoaderFunction = async ({ request }) => {
     headers.append(
       'Set-Cookie',
       await raindropTokenType.serialize(body.token_type, options)
+    );
+    headers.append(
+      'Set-Cookie',
+      await raindropTokenExpires.serialize(
+        options.expires.toISOString(),
+        options
+      )
     );
     return redirect('/', {
       headers,

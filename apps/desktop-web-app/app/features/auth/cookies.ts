@@ -11,6 +11,7 @@ const cookieOptions: CookieOptions = {
 export const accessTokenCookie = createCookie('AccessToken', cookieOptions);
 export const refreshTokenCookie = createCookie('RefreshToken', cookieOptions);
 export const tokenTypeCookie = createCookie('TokenType', cookieOptions);
+
 export const raindropAccessTokenCookie = createCookie(
   'RaindropAccessToken',
   cookieOptions
@@ -21,5 +22,9 @@ export const raindropRefreshTokenCookie = createCookie(
 );
 export const raindropTokenType = createCookie(
   'RaindropTokenType',
+  cookieOptions
+);
+export const raindropTokenExpires = createCookie(
+  'RaindropTokenExpires',
   cookieOptions
 );
