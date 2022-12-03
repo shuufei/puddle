@@ -35,7 +35,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 const FolderPage: FC = () => {
   const { items } = useLoaderData<LoaderData>();
   return (
-    <main>
+    <div>
       <h1>Folder items</h1>
       <p>count: {items.length}</p>
       <ul>
@@ -51,7 +51,7 @@ const FolderPage: FC = () => {
           );
         })}
       </ul>
-    </main>
+    </div>
   );
 };
 

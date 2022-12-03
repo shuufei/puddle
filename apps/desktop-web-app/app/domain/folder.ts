@@ -9,6 +9,6 @@ export type Folder = {
   tags: string[];
   tags_or_search: boolean;
   include_important: boolean;
-  parent_folder_id?: null;
+  parent_folder_id?: Folder['id'];
   user_id: User['id'];
 };

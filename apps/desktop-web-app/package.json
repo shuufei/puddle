@@ -9,7 +9,7 @@
     "dev:remix": "remix watch",
     "dev:miniflare": "cross-env NODE_ENV=development miniflare ./build/index.js --watch --port 4200",
     "dev:css": "npm run generate:css -- --watch",
-    "generate:css": "npx tailwindcss -o ./app/tailwind.css",
+    "generate:css": "npx tailwindcss -i ./app/styles.css -o ./app/tailwind.css",
     "dev": "remix build && run-p \"dev:*\"",
     "start": "cross-env NODE_ENV=production miniflare ./build/index.js"
   },
@@ -21,7 +21,8 @@
     "cross-env": "^7.0.3",
     "jwt-decode": "^3.1.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.10"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.18.0",
