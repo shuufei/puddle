@@ -6,25 +6,30 @@ import type { Item } from '~/domain/raindrop/item';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
+import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 
 type LoaderData = {
   items: Item[];
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const { userId } = await getRequestUserId(request);
-  const { accessToken } = await getRequestRaindropAccessToken(request);
-  const folderId = Number(params.folderId);
-  if (folderId == null || Number.isNaN(folderId)) {
-    throw new Response('Not Found', {
-      status: 404,
+  try {
+    const { userId } = await getRequestUserId(request);
+    const { accessToken } = await getRequestRaindropAccessToken(request);
+    const folderId = Number(params.folderId);
+    if (folderId == null || Number.isNaN(folderId)) {
+      throw new Response('Not Found', {
+        status: 404,
+      });
+    }
+    const res = await getFolderItems(folderId, {
+      userId,
+      raindropAccessToken: accessToken,
     });
+    return json({ items: res.items });
+  } catch (error) {
+    return handleLoaderError(error);
   }
-  const res = await getFolderItems(folderId, {
-    userId,
-    raindropAccessToken: accessToken,
-  });
-  return json({ items: res.items });
 };
 
 const FolderPage: FC = () => {

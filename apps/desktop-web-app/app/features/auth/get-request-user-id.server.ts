@@ -1,5 +1,6 @@
 import { accessTokenCookie } from '~/features/auth/cookies';
 import jwtDecode from 'jwt-decode';
+import { Unauthorized } from '~/errors/unauthorized';
 
 type DecodedAccessToken = {
   aud: string;
@@ -19,9 +20,6 @@ export const getRequestUserId = async (
       userId: decoded.sub,
     };
   } catch (error) {
-    // TODO: エラーハンドリング
-    return {
-      userId: '',
-    };
+    throw new Unauthorized();
   }
 };
