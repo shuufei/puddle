@@ -35,8 +35,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 const FolderPage: FC = () => {
   const { items } = useLoaderData<LoaderData>();
   return (
-    <div>
-      <h1>Folder items</h1>
+    <div className="p-4">
       <p>count: {items.length}</p>
       <ul>
         {items.map((item) => {

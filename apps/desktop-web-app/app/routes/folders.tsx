@@ -64,7 +64,7 @@ const FoldersLayout: FC = () => {
           allFolderStates={folderNavigationStates}
         />
       </nav>
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>
