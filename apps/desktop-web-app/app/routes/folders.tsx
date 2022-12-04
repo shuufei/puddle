@@ -45,7 +45,7 @@ const FoldersLayout: FC = () => {
 
   return (
     <div className="flex gap-6">
-      <nav className="p-4 w-80">
+      <nav className="p-4" style={{ width: '30vw', minWidth: '18rem' }}>
         <FolderListNavigation folders={rootFolders} allFolders={folders} />
       </nav>
       <main className="flex-1">
