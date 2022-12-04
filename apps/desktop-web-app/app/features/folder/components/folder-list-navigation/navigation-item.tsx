@@ -76,10 +76,10 @@ export const NavigationItem: FC<{
             <div className="w-4 h-4"></div>
           </div>
         )}
-        <div className="flex gap-2 items-center text-gray-900 flex-1">
+        <div className="flex gap-2 items-center text-gray-900 flex-1 overflow-hidden">
           <FolderIcon size={'1.9rem'} />
-          <div className="flex-1">
-            <p className="text-sm font-semibold whitespace-nowrap">
+          <div className="flex-1 overflow-hidden">
+            <p className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {folder.title}
             </p>
             <FolderConditions folder={folder} collections={collections} />
