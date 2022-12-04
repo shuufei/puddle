@@ -12,7 +12,7 @@ type GetFolderItemsResponse = {
 };
 
 const getUrl = (
-  collectionId: Collection['id'],
+  collectionId: Collection['_id'],
   search: string,
   perpage: 50,
   page?: number

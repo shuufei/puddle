@@ -5,5 +5,10 @@ export type GetRaindropsResponseBody = {
   result: boolean;
   items: Item[];
   count: number;
-  collectionId: Collection['id'];
+  collectionId: Collection['_id'];
+};
+
+export type GetCollectionsResponseBody = {
+  result: boolean;
+  items: Collection[];
 };

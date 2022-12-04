@@ -1,3 +1,4 @@
 export type Collection = {
-  id: number;
+  _id: number;
+  title: string;
 };
