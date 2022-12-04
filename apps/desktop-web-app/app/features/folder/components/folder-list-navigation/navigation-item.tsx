@@ -1,42 +1,69 @@
 import { NavLink, useLoaderData } from '@remix-run/react';
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
+import { useCallback, useEffect } from 'react';
 import { memo, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder as FolderIcon } from 'react-feather';
+import type { Folder } from '~/domain/folder';
 import type { FoldersLoaderData } from '~/routes/folders';
-import type { FolderNavigationState } from '.';
 import { FolderListNavigation } from '.';
 import { FolderConditions } from '../folder-conditions';
 
+type FolderNavigationState = {
+  opened: boolean;
+};
+
 export const NavigationItem: FC<{
-  folderState: FolderNavigationState;
-  allFolderStates: FolderNavigationState[]; // recoildなどで一元管理する
-}> = memo(function NavigatioinItem({ folderState, allFolderStates }) {
+  folder: Folder;
+  allFolders: Folder[]; // recoildなどで一元管理する
+}> = memo(function NavigatioinItem({ folder, allFolders }) {
+  const folderStateKey = `navstate/folder/${folder.id}`;
   const { collections } = useLoaderData<FoldersLoaderData>();
-  const [opened, setOpened] = useState(folderState.opened);
-  const subFolderStates = useMemo(() => {
-    return allFolderStates.filter(
-      (v) => v.data.parent_folder_id === folderState.data.id
-    );
-  }, [allFolderStates, folderState.data.id]);
+  const [opened, setOpened] = useState<boolean | undefined>(undefined);
+
+  const subFolders = useMemo(() => {
+    return allFolders.filter((v) => v.parent_folder_id === folder.id);
+  }, [allFolders, folder.id]);
+
+  useEffect(() => {
+    const navStateString = localStorage.getItem(folderStateKey);
+    const navState =
+      navStateString != null
+        ? (JSON.parse(navStateString) as FolderNavigationState)
+        : undefined;
+    setOpened(navState?.opened ?? false);
+  }, [folderStateKey]);
+
+  const toggleOpen = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      const updated = !opened;
+      setOpened(updated);
+      const navState: FolderNavigationState = { opened: updated };
+      localStorage.setItem(folderStateKey, JSON.stringify(navState));
+    },
+    [folderStateKey, opened]
+  );
+
+  if (opened == null) {
+    return null;
+  }
+
   return (
     <>
       <NavLink
-        to={`/folders/${folderState.data.id}`}
+        to={`/folders/${folder.id}`}
         className={({ isActive }) => {
           const common =
-            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm border-solid border break-words';
+            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm border-solid border break-words w-full';
           return isActive
             ? `${common} bg-gray-100 border-gray-900`
             : `${common} border-transparent`;
         }}
       >
-        {subFolderStates.length > 0 ? (
+        {subFolders.length > 0 ? (
           <button
             className="text-sm p-0.5 text-gray-900 hover:text-white hover:bg-gray-900 rounded-sm"
-            onClick={(event) => {
-              event.preventDefault();
-              setOpened(!opened);
-            }}
+            onClick={toggleOpen}
           >
             {opened ? (
               <ChevronDown size={'1rem'} />
@@ -51,23 +78,17 @@ export const NavigationItem: FC<{
         )}
         <div className="flex gap-2 items-center text-gray-900 flex-1">
           <FolderIcon size={'1.9rem'} />
-          <div className="flex flex-col flex-1">
-            <span className="text-sm font-semibold whitespace-nowrap">
-              {folderState.data.title}
-            </span>
-            <FolderConditions
-              folder={folderState.data}
-              collections={collections}
-            />
+          <div className="flex-1">
+            <p className="text-sm font-semibold whitespace-nowrap">
+              {folder.title}
+            </p>
+            <FolderConditions folder={folder} collections={collections} />
           </div>
         </div>
       </NavLink>
-      {opened && subFolderStates.length > 0 && (
+      {opened && subFolders.length > 0 && (
         <div className="pl-6 mt-1">
-          <FolderListNavigation
-            folderStates={subFolderStates}
-            allFolderStates={allFolderStates}
-          />
+          <FolderListNavigation folders={subFolders} allFolders={allFolders} />
         </div>
       )}
     </>

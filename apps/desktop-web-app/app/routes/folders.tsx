@@ -9,7 +9,6 @@ import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raind
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
-import type { FolderNavigationState } from '~/features/folder/components/folder-list-navigation';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 
@@ -40,29 +39,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 const FoldersLayout: FC = () => {
   const { folders } = useLoaderData<FoldersLoaderData>();
 
-  const folderNavigationStates: FolderNavigationState[] = useMemo(() => {
-    return folders.reduce((acc, current) => {
-      const state: FolderNavigationState = {
-        data: current,
-        opened: false, // TODO: 開閉状態を永続化
-      };
-      return [...acc, state];
-    }, [] as FolderNavigationState[]);
+  const rootFolders: Folder[] = useMemo(() => {
+    return folders.filter((v) => v.parent_folder_id == null);
   }, [folders]);
-
-  const rootFolderNavigationStates: FolderNavigationState[] = useMemo(() => {
-    return folderNavigationStates.filter(
-      (v) => v.data.parent_folder_id == null
-    );
-  }, [folderNavigationStates]);
 
   return (
     <div className="flex gap-6">
-      <nav className="p-4 max-w-xs">
-        <FolderListNavigation
-          folderStates={rootFolderNavigationStates}
-          allFolderStates={folderNavigationStates}
-        />
+      <nav className="p-4 w-80">
+        <FolderListNavigation folders={rootFolders} allFolders={folders} />
       </nav>
       <main className="flex-1">
         <Outlet />
