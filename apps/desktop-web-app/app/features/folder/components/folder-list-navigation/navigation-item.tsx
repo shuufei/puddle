@@ -54,7 +54,7 @@ export const NavigationItem: FC<{
         to={`/folders/${folder.id}`}
         className={({ isActive }) => {
           const common =
-            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm border-solid border break-words w-full';
+            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm border-solid border-2 break-words w-full';
           return isActive
             ? `${common} bg-gray-100 border-gray-900`
             : `${common} border-transparent`;
