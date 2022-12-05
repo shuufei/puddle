@@ -2,6 +2,7 @@ import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import type { Item } from '~/domain/raindrop/item';
 import type { User } from '~/domain/user';
+import { NotFound } from '~/errors/not-found';
 import type { GetRaindropsResponseBody } from '~/libs/raindrop/api-def';
 import { RAINDROP_API_ENDPOINT } from '~/libs/raindrop/endpoint';
 import { getAuthorizedHeader } from '~/libs/raindrop/get-authorized-header';
@@ -40,8 +41,7 @@ export const getFolderItems = async (
     .eq('id', folderId);
   const folder = data.data?.[0] as Folder;
   if (folder == null) {
-    // TODO: あとで適切にエラーハンドリングする
-    throw new Error('Not Found');
+    throw new NotFound();
   }
 
   const cacheKey = `users/${userId}/folder/${folderId}/items`;
