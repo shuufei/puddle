@@ -13,6 +13,7 @@ import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolderById } from '~/features/folder/api/get-folder-by-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
+import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
 import { FolderConditions } from '~/features/folder/components/folder-conditions';
 import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
@@ -20,6 +21,7 @@ import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 type LoaderData = {
   folder: Folder;
   items: Item[];
+  subFolders: Folder[];
   collections: Collection[];
 };
 
@@ -31,20 +33,23 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     if (folderId == null || Number.isNaN(folderId)) {
       throw new NotFound();
     }
-    const [folderRes, itemsRes, collectionsRes] = await Promise.all([
-      getFolderById(folderId, userId),
-      getFolderItems(folderId, {
-        userId,
-        raindropAccessToken: accessToken,
-      }),
-      // FIXME: get collectionsがparentと重複呼び出しになるのを避けたい
-      getCollections({ userId, raindropAccessToken: accessToken }),
-    ]);
+    const [folderRes, itemsRes, subFoldersRes, collectionsRes] =
+      await Promise.all([
+        getFolderById(folderId, userId),
+        getFolderItems(folderId, {
+          userId,
+          raindropAccessToken: accessToken,
+        }),
+        getSubFoldersByParentId(folderId, userId),
+        // FIXME: get collectionsがparentと重複呼び出しになるのを避けたい
+        getCollections({ userId, raindropAccessToken: accessToken }),
+      ]);
     if (folderRes.data.data?.[0] == null) {
       throw new NotFound();
     }
     const response: LoaderData = {
       items: itemsRes.items,
+      subFolders: subFoldersRes.data.data as Folder[],
       folder: folderRes.data.data[0] as Folder,
       collections: collectionsRes.collections,
     };
@@ -55,7 +60,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 const FolderPage: FC = () => {
-  const { folder, items, collections } = useLoaderData<LoaderData>();
+  const { folder, items, subFolders, collections } =
+    useLoaderData<LoaderData>();
   const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
   return (
     <div className="p-4">
@@ -96,7 +102,9 @@ const FolderPage: FC = () => {
         </ul>
       </div>
       <div hidden={activeTab !== 'subfodlers'} className={'p-2'}>
-        subfolders
+        {subFolders.map((subFolder) => {
+          return <p key={subFolder.id}>{subFolder.title}</p>;
+        })}
       </div>
     </div>
   );
