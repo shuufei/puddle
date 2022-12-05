@@ -16,5 +16,5 @@ export type Item = {
   media: { type: string; link: string }[];
   domain: string;
   sort: number;
-  collectionId: Collection['id'];
+  collectionId: Collection['_id'];
 };

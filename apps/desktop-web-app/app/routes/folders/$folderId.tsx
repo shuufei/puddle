@@ -15,6 +15,7 @@ import { getFolderById } from '~/features/folder/api/get-folder-by-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
 import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
 import { FolderConditions } from '~/features/folder/components/folder-conditions';
+import { RaindropListItem } from '~/features/folder/components/raindrop-list-item';
 import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 
@@ -90,12 +91,8 @@ const FolderPage: FC = () => {
         <ul>
           {items.map((item) => {
             return (
-              <li key={item._id} className="py-2 px-4">
-                <p>{item.title}</p>
-                <p className="text-gray-400">
-                  {item.tags.map((v) => `#${v}`).join(', ')},{' '}
-                  {item.important ? 'important' : '-'}
-                </p>
+              <li key={item._id} className="mb-3">
+                <RaindropListItem raindropItem={item} />
               </li>
             );
           })}
