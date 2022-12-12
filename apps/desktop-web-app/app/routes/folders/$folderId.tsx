@@ -14,7 +14,9 @@ import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolderById } from '~/features/folder/api/get-folder-by-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
 import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
+import { CreateFolderButton } from '~/features/folder/components/create-folder-button';
 import { FolderConditions } from '~/features/folder/components/folder-conditions';
+import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { RaindropListItem } from '~/features/folder/components/raindrop-list-item';
 import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
@@ -63,7 +65,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 const FolderPage: FC = () => {
   const { folder, items, subFolders, collections } =
     useLoaderData<LoaderData>();
-  const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
+  const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>(
+    'subfodlers'
+  );
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
@@ -87,7 +91,7 @@ const FolderPage: FC = () => {
         />
       </div>
       <hr className="border-gray-900 border-2 border-b-0" />
-      <div hidden={activeTab !== 'items'} className={'p-2'}>
+      <div hidden={activeTab !== 'items'} className={'p-2 pt-4'}>
         <ul>
           {items.map((item) => {
             return (
@@ -98,10 +102,15 @@ const FolderPage: FC = () => {
           })}
         </ul>
       </div>
-      <div hidden={activeTab !== 'subfodlers'} className={'p-2'}>
-        {subFolders.map((subFolder) => {
-          return <p key={subFolder.id}>{subFolder.title}</p>;
-        })}
+      <div hidden={activeTab !== 'subfodlers'} className={'p-2 pt-4'}>
+        {subFolders.length != 0 ? (
+          <FolderListNavigation folders={subFolders} allFolders={[]} />
+        ) : (
+          <div className="flex flex-col items-start gap-4">
+            <span className="text-sm text-gray-500">No folders</span>
+            <CreateFolderButton />
+          </div>
+        )}
       </div>
     </div>
   );
