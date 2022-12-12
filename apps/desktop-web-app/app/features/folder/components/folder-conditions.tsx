@@ -11,9 +11,11 @@ export const FolderConditions: FC<{
   const collectionTitle = collections.find(
     (v) => v._id === folder.collectionId
   )?.title;
+  const condition = folder.tags_or_search ? 'OR' : 'AND';
   return (
     <div className="text-xs font-semibold text-gray-500 flex gap-x-1 gap-y-0 items-center flex-wrap">
       {collectionTitle && <span>{collectionTitle}:</span>}
+      <span>{condition}:</span>
       {folder.tags.map((v) => (
         <span key={v}>{`#${v}`}</span>
       ))}
