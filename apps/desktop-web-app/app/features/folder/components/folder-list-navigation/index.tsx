@@ -10,14 +10,13 @@ export type FolderNavigationState = {
 
 export const FolderListNavigation: FC<{
   folders: Folder[];
-  allFolders: Folder[]; // recoildなどで一元管理する
-}> = memo(function FolderListNavigation({ folders, allFolders }) {
+}> = memo(function FolderListNavigation({ folders }) {
   return (
     <ul>
       {folders.map((folder) => {
         return (
           <li key={folder.id} className="mb-1">
-            <NavigationItem folder={folder} allFolders={allFolders} />
+            <NavigationItem folder={folder} />
           </li>
         );
       })}

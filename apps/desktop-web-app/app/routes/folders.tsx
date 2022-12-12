@@ -10,6 +10,8 @@ import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
+import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
+import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 
 export type FoldersLoaderData = {
@@ -37,7 +39,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 const FoldersLayout: FC = () => {
-  const { folders } = useLoaderData<FoldersLoaderData>();
+  const { folders, collections } = useLoaderData<FoldersLoaderData>();
 
   const rootFolders: Folder[] = useMemo(() => {
     return folders.filter((v) => v.parent_folder_id == null);
@@ -45,12 +47,16 @@ const FoldersLayout: FC = () => {
 
   return (
     <div className="flex gap-6">
-      <nav className="p-4" style={{ width: '30vw', minWidth: '18rem' }}>
-        <FolderListNavigation folders={rootFolders} allFolders={folders} />
-      </nav>
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <CollectionsStateContext.Provider value={{ collections }}>
+        <FoldersStateContext.Provider value={{ folders }}>
+          <nav className="p-4" style={{ width: '30vw', minWidth: '18rem' }}>
+            <FolderListNavigation folders={rootFolders} />
+          </nav>
+          <main className="flex-1">
+            <Outlet />
+          </main>
+        </FoldersStateContext.Provider>
+      </CollectionsStateContext.Provider>
     </div>
   );
 };

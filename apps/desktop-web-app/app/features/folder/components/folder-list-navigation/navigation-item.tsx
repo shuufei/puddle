@@ -1,11 +1,17 @@
-import { NavLink, useLoaderData } from '@remix-run/react';
+import { NavLink } from '@remix-run/react';
 import type { FC, MouseEvent } from 'react';
-import { useCallback, useEffect } from 'react';
-import { memo, useMemo, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { ChevronDown, ChevronRight, Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
-import type { FoldersLoaderData } from '~/routes/folders';
 import { FolderListNavigation } from '.';
+import { FoldersStateContext } from '../../states/folders-state-context';
 import { FolderConditions } from '../folder-conditions';
 
 type FolderNavigationState = {
@@ -14,10 +20,10 @@ type FolderNavigationState = {
 
 export const NavigationItem: FC<{
   folder: Folder;
-  allFolders: Folder[]; // recoildなどで一元管理する
-}> = memo(function NavigatioinItem({ folder, allFolders }) {
+}> = memo(function NavigatioinItem({ folder }) {
+  const { folders: allFolders } = useContext(FoldersStateContext);
+
   const folderStateKey = `navstate/folder/${folder.id}`;
-  const { collections } = useLoaderData<FoldersLoaderData>();
   const [opened, setOpened] = useState<boolean | undefined>(undefined);
 
   const subFolders = useMemo(() => {
@@ -82,13 +88,13 @@ export const NavigationItem: FC<{
             <p className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {folder.title}
             </p>
-            <FolderConditions folder={folder} collections={collections} />
+            <FolderConditions folder={folder} />
           </div>
         </div>
       </NavLink>
       {opened && subFolders.length > 0 && (
         <div className="pl-6 mt-1">
-          <FolderListNavigation folders={subFolders} allFolders={allFolders} />
+          <FolderListNavigation folders={subFolders} />
         </div>
       )}
     </>

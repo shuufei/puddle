@@ -5,12 +5,10 @@ import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules'
 import type { FC } from 'react';
 import { useState } from 'react';
 import type { Folder } from '~/domain/folder';
-import type { Collection } from '~/domain/raindrop/collection';
 import type { Item } from '~/domain/raindrop/item';
 import { NotFound } from '~/errors/not-found';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
-import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolderById } from '~/features/folder/api/get-folder-by-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
 import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
@@ -25,7 +23,6 @@ type LoaderData = {
   folder: Folder;
   items: Item[];
   subFolders: Folder[];
-  collections: Collection[];
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -36,17 +33,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     if (folderId == null || Number.isNaN(folderId)) {
       throw new NotFound();
     }
-    const [folderRes, itemsRes, subFoldersRes, collectionsRes] =
-      await Promise.all([
-        getFolderById(folderId, userId),
-        getFolderItems(folderId, {
-          userId,
-          raindropAccessToken: accessToken,
-        }),
-        getSubFoldersByParentId(folderId, userId),
-        // FIXME: get collectionsがparentと重複呼び出しになるのを避けたい
-        getCollections({ userId, raindropAccessToken: accessToken }),
-      ]);
+    const [folderRes, itemsRes, subFoldersRes] = await Promise.all([
+      getFolderById(folderId, userId),
+      getFolderItems(folderId, {
+        userId,
+        raindropAccessToken: accessToken,
+      }),
+      getSubFoldersByParentId(folderId, userId),
+    ]);
     if (folderRes.data.data?.[0] == null) {
       throw new NotFound();
     }
@@ -54,7 +48,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       items: itemsRes.items,
       subFolders: subFoldersRes.data.data as Folder[],
       folder: folderRes.data.data[0] as Folder,
-      collections: collectionsRes.collections,
     };
     return json(response);
   } catch (error) {
@@ -63,16 +56,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 const FolderPage: FC = () => {
-  const { folder, items, subFolders, collections } =
-    useLoaderData<LoaderData>();
-  const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>(
-    'subfodlers'
-  );
+  const { folder, items, subFolders } = useLoaderData<LoaderData>();
+  const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
       <div className="mt-1">
-        <FolderConditions folder={folder} collections={collections} />
+        <FolderConditions folder={folder} />
       </div>
       <div className="mt-6 flex gap-1 px-4">
         <Tab
@@ -104,7 +94,7 @@ const FolderPage: FC = () => {
       </div>
       <div hidden={activeTab !== 'subfodlers'} className={'p-2 pt-4'}>
         {subFolders.length != 0 ? (
-          <FolderListNavigation folders={subFolders} allFolders={[]} />
+          <FolderListNavigation folders={subFolders} />
         ) : (
           <div className="flex flex-col items-start gap-4">
             <span className="text-sm text-gray-500">No folders</span>

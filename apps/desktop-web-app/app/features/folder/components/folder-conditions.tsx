@@ -1,13 +1,13 @@
 import type { FC } from 'react';
-import { memo } from 'react';
+import { memo, useContext } from 'react';
 import { Heart } from 'react-feather';
 import type { Folder } from '~/domain/folder';
-import type { Collection } from '~/domain/raindrop/collection';
+import { CollectionsStateContext } from '../states/collections-state-context';
 
 export const FolderConditions: FC<{
   folder: Folder;
-  collections: Collection[];
-}> = memo(function FolderConditions({ folder, collections }) {
+}> = memo(function FolderConditions({ folder }) {
+  const { collections } = useContext(CollectionsStateContext);
   const collectionTitle = collections.find(
     (v) => v._id === folder.collectionId
   )?.title;
