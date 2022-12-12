@@ -6,7 +6,10 @@ export const RaindropListItem: FC<{
   raindropItem: Item;
 }> = ({ raindropItem }) => {
   return (
-    <a href={raindropItem.link} className="flex gap-3 items-start p-2">
+    <a
+      href={raindropItem.link}
+      className="flex gap-3 items-start p-2 hover:bg-gray-100 rounded-sm"
+    >
       <img
         src={raindropItem.cover}
         alt={raindropItem.title}
