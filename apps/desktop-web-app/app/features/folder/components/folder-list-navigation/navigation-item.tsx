@@ -13,6 +13,7 @@ import type { Folder } from '~/domain/folder';
 import { FolderListNavigation } from '.';
 import { FoldersStateContext } from '../../states/folders-state-context';
 import { FolderConditions } from '../folder-conditions';
+import { FolderMenu } from '../folder-menu';
 
 type FolderNavigationState = {
   opened: boolean;
@@ -60,7 +61,7 @@ export const NavigationItem: FC<{
         to={`/folders/${folder.id}`}
         className={({ isActive }) => {
           const common =
-            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 pr-6 rounded-sm border-solid border-2 break-words w-full';
+            'flex gap-1.5 items-center hover:bg-gray-100 px-2 py-1 rounded-sm border-solid border-2 break-words w-full group';
           return isActive
             ? `${common} bg-gray-100 border-gray-900`
             : `${common} border-transparent`;
@@ -90,6 +91,9 @@ export const NavigationItem: FC<{
             </p>
             <FolderConditions folder={folder} />
           </div>
+        </div>
+        <div className="opacity-0 group-hover:opacity-100">
+          <FolderMenu />
         </div>
       </NavLink>
       {opened && subFolders.length > 0 && (

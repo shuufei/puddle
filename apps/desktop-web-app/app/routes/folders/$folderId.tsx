@@ -15,6 +15,7 @@ import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by
 import { CreateFolderButton } from '~/features/folder/components/create-folder-button';
 import { FolderConditions } from '~/features/folder/components/folder-conditions';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
+import { FolderMenu } from '~/features/folder/components/folder-menu';
 import { RaindropListItem } from '~/features/folder/components/raindrop-list-item';
 import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
@@ -60,9 +61,14 @@ const FolderPage: FC = () => {
   const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
-      <div className="mt-1">
-        <FolderConditions folder={folder} />
+      <div className="flex justify-between pr-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
+          <div className="mt-1">
+            <FolderConditions folder={folder} />
+          </div>
+        </div>
+        <FolderMenu position="left" />
       </div>
       <div className="mt-6 flex gap-1 px-4">
         <Tab
