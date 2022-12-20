@@ -49,6 +49,9 @@ export const Menu: FC<MenuPorps & { children: ReactNode }> = ({
           isOpened ? 'visible' : 'hidden'
         } ${position === 'left' ? 'right-0' : 'left-0'}`}
         ref={menuRef}
+        onClick={(e) => {
+          e.preventDefault();
+        }}
       >
         {children}
       </div>
