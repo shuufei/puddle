@@ -92,8 +92,8 @@ export const NavigationItem: FC<{
             <FolderConditions folder={folder} />
           </div>
         </div>
-        <div className="opacity-0 group-hover:opacity-100">
-          <FolderMenu />
+        <div className="opacity-0 group-hover:opacity-100 focus-within:opacity-100">
+          <FolderMenu position="left" />
         </div>
       </NavLink>
       {opened && subFolders.length > 0 && (
