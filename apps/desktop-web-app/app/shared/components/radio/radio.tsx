@@ -10,7 +10,7 @@ export const Radio: FC<{ children: ReactNode; value: string }> = ({
 }) => {
   const state = useContext(RadioContext) as RadioGroupState;
   const ref = useRef(null);
-  const { inputProps } = useRadio({ value }, state, ref);
+  const { inputProps } = useRadio({ value, 'aria-label': value }, state, ref);
   return (
     <label className="block text-sm text-gray-900">
       <input {...inputProps} ref={ref} />

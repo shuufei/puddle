@@ -3,10 +3,13 @@ import { useRef } from 'react';
 import { useCheckbox } from 'react-aria';
 import { useToggleState } from 'react-stately';
 
-export const Checkbox: FC<{ children: ReactNode }> = ({ children }) => {
+export const Checkbox: FC<{ children: ReactNode; label: string }> = ({
+  children,
+  label,
+}) => {
   const state = useToggleState({});
   const ref = useRef(null);
-  const { inputProps } = useCheckbox({}, state, ref);
+  const { inputProps } = useCheckbox({ 'aria-label': label }, state, ref);
   return (
     <label className=" text-sm text-gray-900 flex gap-1 items-center">
       <input {...inputProps} ref={ref} />
