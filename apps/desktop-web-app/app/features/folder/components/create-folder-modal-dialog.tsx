@@ -15,6 +15,7 @@ export const CreateFolderModalDialog: FC = () => {
       </button>
       <Dialog
         isOpen={isOpen}
+        title={'新規フォルダを作成'}
         onClose={() => {
           setOpen(false);
         }}

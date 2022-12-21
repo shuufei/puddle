@@ -1,5 +1,6 @@
 import type { FC, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { X } from 'react-feather';
 
 const FOCUSABLE_ELEMENTS = [
   'a[href]',
@@ -17,9 +18,10 @@ const FOCUSABLE_ELEMENTS = [
 
 export const Dialog: FC<{
   children: ReactNode;
+  title: string;
   isOpen: boolean;
   onClose: () => void;
-}> = ({ children, isOpen, onClose }) => {
+}> = ({ children, title, isOpen, onClose }) => {
   const [dialogTriggerElement, setDialogTriggerElement] =
     useState<HTMLElement>();
   const titleId = useMemo(() => `create-folder-dialog-title`, []);
@@ -138,28 +140,42 @@ export const Dialog: FC<{
     removeEventListeners,
   ]);
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <>
-      <div className="flex justify-center">
-        {isOpen && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-60"></div>
-        )}
+      <div
+        tabIndex={-1}
+        className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-60"
+      ></div>
+      <div
+        className="fixed flex justify-center items-start w-full h-screen top-0 left-0 overflow-auto overscroll-y-auto"
+        onClick={() => {
+          onClose();
+        }}
+      >
         <div
           ref={dialogRef}
           role={'dialog'}
           aria-modal={'true'}
-          className={`${
-            isOpen ? 'block' : 'hidden'
-          } bg-white border border-gray-600 p-3 absolute top-8 shadow-lg`}
+          className={`bg-white pt-4 pb-5 px-14 drop-shadow-lg relative mt-16 mb-16 rounded-md max-w-xs sm:max-w-md lg:max-w-lg 2xl:max-w-2xl`}
           aria-labelledby={titleId}
+          onClick={(event) => event.stopPropagation()}
         >
-          <h2 id={titleId}>Create Folder</h2>
+          <button
+            className="absolute right-3 top-3 p-1 rounded-sm hover:bg-gray-100 active:bg-gray-300"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            <X size={'1.25rem'} />
+          </button>
+          <h2 id={titleId} className="text-base font-semibold text-gray-900">
+            {title}
+          </h2>
           {children}
-          {/* <input type="text" />
-          <div>
-            <button onClick={onClose}>cancel</button>
-            <button>create</button>
-          </div> */}
         </div>
       </div>
     </>
