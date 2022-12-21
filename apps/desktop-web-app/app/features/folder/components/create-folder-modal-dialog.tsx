@@ -1,10 +1,35 @@
 import type { FC } from 'react';
 import { useState } from 'react';
 import { Folder } from 'react-feather';
+import type { Collection } from '~/domain/raindrop/collection';
+import { Button } from '~/shared/components/button';
+import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
+import { ImportantIcon } from '~/shared/components/important-icon';
+import { Radio } from '~/shared/components/radio/radio';
+import { RadioGroup } from '~/shared/components/radio/radio-group';
+import type { SelectOption } from '~/shared/components/select-box';
+import { SelectBox } from '~/shared/components/select-box';
+import { TextField } from '~/shared/components/text-field';
 
-export const CreateFolderModalDialog: FC = () => {
-  const [isOpen, setOpen] = useState(false);
+const ALL_COLLECTION_VALUE = 'all';
+
+export const CreateFolderModalDialog: FC<{ collections: Collection[] }> = ({
+  collections,
+}) => {
+  const [isOpen, setOpen] = useState(true);
+  const options: SelectOption[] = [
+    {
+      value: ALL_COLLECTION_VALUE,
+      label: '全て',
+    },
+    ...collections.map((v) => {
+      return {
+        value: `${v._id}`,
+        label: v.title,
+      };
+    }),
+  ];
   return (
     <>
       <button
@@ -22,16 +47,42 @@ export const CreateFolderModalDialog: FC = () => {
           setOpen(false);
         }}
       >
-        <input type="text" />
-        <div>
-          <button
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            cancel
-          </button>
-          <button>create</button>
+        <div className="mt-4">
+          <TextField label="タイトル" placeholder="フォルダのタイトルを入力" />
+          <section className="mt-4">
+            <h3 className="text-md font-semibold text-gray-900">条件</h3>
+            <p className="text-xs text-gray-600">
+              指定した条件にマッチする項目が、作成したフォルダに自動で追加されます
+            </p>
+            <div className="mt-3 flex flex-col gap-3">
+              <SelectBox label="コレクション" options={options} />
+              <TextField
+                label="タグ"
+                description='#をつけてスペース区切りで指定してください: #tag #"tag name"'
+                placeholder={`#tag #"tag name"`}
+              />
+              <Checkbox>
+                <ImportantIcon size="1rem" />
+              </Checkbox>
+              <RadioGroup label="一致">
+                <div className="flex gap-4">
+                  <Radio value="and">AND</Radio>
+                  <Radio value="or">OR</Radio>
+                </div>
+              </RadioGroup>
+            </div>
+          </section>
+          <div className="flex gap-1 mt-8">
+            <Button>作成</Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              キャンセル
+            </Button>
+          </div>
         </div>
       </Dialog>
     </>
