@@ -161,7 +161,7 @@ export const Dialog: FC<{
           ref={dialogRef}
           role={'dialog'}
           aria-modal={'true'}
-          className={`bg-white pt-4 pb-5 px-14 drop-shadow-lg relative mt-16 mb-16 rounded-md min-w-xs max-w-xs sm:min-w-sm sm:max-w-md lg:min-w-md lg:max-w-lg 2xl:min-w-lg 2xl:max-w-2xl`}
+          className={`bg-white pt-4 pb-5 px-14 drop-shadow-lg relative mt-16 mb-16 rounded-md min-w-xs max-w-xs sm:min-w-sm sm:max-w-md lg:min-w-md lg:max-w-xl 2xl:min-w-lg 2xl:max-w-2xl`}
           aria-labelledby={titleId}
           onClick={(event) => event.stopPropagation()}
         >
