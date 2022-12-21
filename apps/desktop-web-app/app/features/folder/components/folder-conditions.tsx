@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { memo, useContext } from 'react';
-import { Heart } from 'react-feather';
 import type { Folder } from '~/domain/folder';
+import { ImportantIcon } from '~/shared/components/important-icon';
 import { CollectionsStateContext } from '../states/collections-state-context';
 
 export const FolderConditions: FC<{
@@ -19,9 +19,7 @@ export const FolderConditions: FC<{
       {folder.tags.map((v) => (
         <span key={v}>{`#${v}`}</span>
       ))}
-      {folder.include_important ? (
-        <Heart size={'0.75rem'} color={'transparent'} fill={'#f87171'} />
-      ) : null}
+      {folder.include_important ? <ImportantIcon size="0.75rem" /> : null}
     </div>
   );
 });
