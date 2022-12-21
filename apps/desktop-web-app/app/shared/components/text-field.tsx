@@ -2,15 +2,19 @@ import type { FC } from 'react';
 import { useRef } from 'react';
 import { useTextField } from 'react-aria';
 
-export const TextField: FC<{ label: string }> = ({ label }) => {
+export const TextField: FC<{
+  label: string;
+  description?: string;
+  placeholder?: string;
+}> = ({ label, description, placeholder }) => {
   const inputRef = useRef(null);
-  const { labelProps, inputProps } = useTextField(
-    { label, placeholder: `${label}を入力してください` },
+  const { labelProps, inputProps, descriptionProps } = useTextField(
+    { label, placeholder },
     inputRef
   );
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm" {...labelProps}>
+      <label className="text-sm text-gray-900" {...labelProps}>
         {label}
       </label>
       <input
@@ -18,6 +22,11 @@ export const TextField: FC<{ label: string }> = ({ label }) => {
         {...inputProps}
         ref={inputRef}
       />
+      {description && (
+        <p className="text-xs text-gray-600" {...descriptionProps}>
+          {description}
+        </p>
+      )}
     </div>
   );
 };
