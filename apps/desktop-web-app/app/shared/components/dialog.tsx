@@ -19,9 +19,10 @@ const FOCUSABLE_ELEMENTS = [
 export const Dialog: FC<{
   children: ReactNode;
   title: string;
+  titleIcon?: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-}> = ({ children, title, isOpen, onClose }) => {
+}> = ({ children, title, titleIcon, isOpen, onClose }) => {
   const [dialogTriggerElement, setDialogTriggerElement] =
     useState<HTMLElement>();
   const titleId = useMemo(() => `create-folder-dialog-title`, []);
@@ -165,16 +166,19 @@ export const Dialog: FC<{
           onClick={(event) => event.stopPropagation()}
         >
           <button
-            className="absolute right-3 top-3 p-1 rounded-sm hover:bg-gray-100 active:bg-gray-300"
+            className="absolute right-2 top-3 p-1 rounded-sm hover:bg-gray-100 active:bg-gray-300"
             onClick={() => {
               onClose();
             }}
           >
             <X size={'1.25rem'} />
           </button>
-          <h2 id={titleId} className="text-base font-semibold text-gray-900">
-            {title}
-          </h2>
+          <div className="font-semibold text-gray-900 flex gap-1 items-center">
+            {titleIcon && titleIcon}
+            <h2 id={titleId} className="text-base">
+              {title}
+            </h2>
+          </div>
           {children}
         </div>
       </div>
