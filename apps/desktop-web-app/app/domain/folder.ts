@@ -5,7 +5,7 @@ export type Folder = {
   id: number;
   created_at: string;
   title: string;
-  collectionId?: Collection['id'];
+  collectionId?: Collection['_id'];
   tags: string[];
   tags_or_search: boolean;
   include_important: boolean;

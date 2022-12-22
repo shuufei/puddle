@@ -1,4 +1,9 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/cloudflare';
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/cloudflare';
+import { json } from '@remix-run/cloudflare';
 import {
   Links,
   LiveReload,
@@ -6,6 +11,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from '@remix-run/react';
 import { SSRProvider } from 'react-aria';
 
@@ -19,7 +25,23 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1',
 });
 
+type LoaderData = {
+  env: {
+    endpoint: string;
+  };
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const data: LoaderData = {
+    env: {
+      endpoint: ENDPOINT,
+    },
+  };
+  return json(data);
+};
+
 export default function App() {
+  const data = useLoaderData<LoaderData>();
   return (
     <html lang="en">
       <head>
@@ -30,6 +52,11 @@ export default function App() {
         <SSRProvider>
           <Outlet />
         </SSRProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.env)}`,
+          }}
+        />
         <ScrollRestoration />
         <Scripts />
         <LiveReload port={8002} />
