@@ -9,7 +9,8 @@ export type SelectOption = {
 export const SelectBox: FC<{
   label: string;
   options: SelectOption[];
-}> = ({ label, options }) => {
+  onChange?: (value: SelectOption['value']) => void;
+}> = ({ label, options, onChange }) => {
   const { labelProps, fieldProps } = useField({ label });
   return (
     <div className="flex flex-col gap-1">
@@ -19,6 +20,9 @@ export const SelectBox: FC<{
       <select
         className="py-1 px-1.5 text-sm w-full border border-gray-400 rounded-sm"
         {...fieldProps}
+        onChange={(value) => {
+          onChange?.(value.target.value);
+        }}
       >
         {options.map((option) => {
           return (

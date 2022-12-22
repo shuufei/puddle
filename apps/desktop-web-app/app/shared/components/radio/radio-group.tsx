@@ -6,8 +6,10 @@ import { RadioContext } from './radio-context';
 export const RadioGroup: FC<{
   children: ReactNode;
   label: string;
-}> = ({ children, label }) => {
-  const state = useRadioGroupState({ label });
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+}> = ({ children, label, defaultValue, onChange }) => {
+  const state = useRadioGroupState({ label, defaultValue, onChange });
   const { radioGroupProps, labelProps } = useRadioGroup({ label }, state);
   return (
     <div {...radioGroupProps}>

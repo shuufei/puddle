@@ -3,11 +3,12 @@ import { useRef } from 'react';
 import { useCheckbox } from 'react-aria';
 import { useToggleState } from 'react-stately';
 
-export const Checkbox: FC<{ children: ReactNode; label: string }> = ({
-  children,
-  label,
-}) => {
-  const state = useToggleState({});
+export const Checkbox: FC<{
+  children: ReactNode;
+  label: string;
+  onChange?: (value: boolean) => void;
+}> = ({ children, label, onChange }) => {
+  const state = useToggleState({ onChange });
   const ref = useRef(null);
   const { inputProps } = useCheckbox({ 'aria-label': label }, state, ref);
   return (
