@@ -21,7 +21,7 @@ type FolderNavigationState = {
 
 export const NavigationItem: FC<{
   folder: Folder;
-  onClickCreateMenu: (parentFolderId?: Folder['id']) => void;
+  onClickCreateMenu: (parentFolder?: Folder) => void;
 }> = memo(function NavigatioinItem({ folder, onClickCreateMenu }) {
   const { folders: allFolders } = useContext(FoldersStateContext);
   const folderStateKey = `navstate/folder/${folder.id}`;
@@ -95,7 +95,7 @@ export const NavigationItem: FC<{
           <FolderMenu
             position="left"
             onClickCreateMenu={() => {
-              onClickCreateMenu(folder.id);
+              onClickCreateMenu(folder);
             }}
             onClickEditMenu={() => {}}
             onClickDeleteMenu={() => {}}

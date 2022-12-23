@@ -53,7 +53,7 @@ const FoldersLayout: FC = () => {
   const fetcher = useFetcher<FoldersLoaderData>();
   const [createFolderDialogState, setCreateFolderDialogState] = useState<{
     isOpen: boolean;
-    parentFolderId?: Folder['id'];
+    parentFolder?: Folder;
   }>({ isOpen: false });
   const transitioin = useTransition();
 
@@ -87,10 +87,10 @@ const FoldersLayout: FC = () => {
             <div className="mt-2">
               <FolderListNavigation
                 folders={rootFolders}
-                onClickCreateMenu={(parentFolderId) => {
+                onClickCreateMenu={(parentFolder) => {
                   setCreateFolderDialogState({
                     isOpen: true,
-                    parentFolderId,
+                    parentFolder,
                   });
                 }}
               />
@@ -109,7 +109,7 @@ const FoldersLayout: FC = () => {
           <CreateFolderModalDialog
             collections={collections}
             isOpen={createFolderDialogState.isOpen}
-            parentFolderId={createFolderDialogState.parentFolderId}
+            parentFolder={createFolderDialogState.parentFolder}
             onClose={() => {
               setCreateFolderDialogState({ isOpen: false });
               fetcher.load('/folders');

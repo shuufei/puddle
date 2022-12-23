@@ -25,9 +25,9 @@ type Match = keyof typeof MATCH;
 export const CreateFolderModalDialog: FC<{
   collections: Collection[];
   isOpen: boolean;
-  parentFolderId?: Folder['id'];
+  parentFolder?: Folder;
   onClose: () => void;
-}> = ({ collections, isOpen, parentFolderId, onClose }) => {
+}> = ({ collections, isOpen, parentFolder, onClose }) => {
   const options: SelectOption[] = [
     {
       value: ALL_COLLECTION_VALUE,
@@ -68,7 +68,7 @@ export const CreateFolderModalDialog: FC<{
       tags: tags,
       include_important: includeImportant,
       tags_or_search: match === 'or',
-      parent_folder_id: parentFolderId,
+      parent_folder_id: parentFolder?.id,
     };
     const res = await fetch(`${endpoint}/api/folders`, {
       method: 'POST',
@@ -77,7 +77,7 @@ export const CreateFolderModalDialog: FC<{
     console.log(res.status);
     onClose();
     setCreating(false);
-  }, [collectionId, includeImportant, match, onClose, parentFolderId]);
+  }, [collectionId, includeImportant, match, onClose, parentFolder?.id]);
 
   return (
     <Dialog
@@ -88,6 +88,12 @@ export const CreateFolderModalDialog: FC<{
         onClose();
       }}
     >
+      {parentFolder && (
+        <div className="mt-2 text-xs text-gray-500 font-semibold">
+          <p>./{parentFolder.title}</p>
+        </div>
+      )}
+
       <div className="mt-4">
         <TextField
           label="タイトル"
