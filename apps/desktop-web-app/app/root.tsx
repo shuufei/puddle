@@ -43,7 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function App() {
   const data = useLoaderData<LoaderData>();
   return (
-    <html lang="en">
+    <html lang="ja">
       <head>
         <Meta />
         <Links />
