@@ -12,8 +12,12 @@ export const FolderListNavigation: FC<{
   folders: Folder[];
   onClickCreateMenu: (parentFolder?: Folder) => void;
   // onClickEditMenu: () => void;
-  // onClickDeleteMenu: () => void;
-}> = memo(function FolderListNavigation({ folders, onClickCreateMenu }) {
+  onClickDeleteMenu: (folder: Folder) => void;
+}> = memo(function FolderListNavigation({
+  folders,
+  onClickCreateMenu,
+  onClickDeleteMenu,
+}) {
   return (
     <ul>
       {folders.map((folder) => {
@@ -23,7 +27,7 @@ export const FolderListNavigation: FC<{
               folder={folder}
               onClickCreateMenu={onClickCreateMenu}
               // onClickEditMenu={onClickEditMenu}
-              // onClickDeleteMenu={onClickDeleteMenu}
+              onClickDeleteMenu={onClickDeleteMenu}
             />
           </li>
         );

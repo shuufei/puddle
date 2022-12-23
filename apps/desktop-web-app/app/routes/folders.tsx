@@ -16,6 +16,7 @@ import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
 import { CreateFolderModalDialog } from '~/features/folder/components/create-folder-modal-dialog';
+import { DeleteFolderModalDialog } from '~/features/folder/components/delete-folder-modal-dialog';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
@@ -55,6 +56,9 @@ const FoldersLayout: FC = () => {
     isOpen: boolean;
     parentFolder?: Folder;
   }>({ isOpen: false });
+  const [deleteFolderDialogState, setDeleteFolderDialogState] = useState<{
+    folder?: Folder;
+  }>({});
   const transitioin = useTransition();
 
   const folders = useMemo(() => {
@@ -76,11 +80,14 @@ const FoldersLayout: FC = () => {
             style={{ width: '30vw', minWidth: '18rem', maxWidth: '24rem' }}
           >
             <div className="flex items-center px-3 justify-end">
-              <Menu>
+              <Menu position={'left'}>
                 <MenuContentItemButton
                   label="フォルダを追加"
                   icon={<FolderPlus size={'1rem'} />}
                   role={'normal'}
+                  onClick={() => {
+                    setCreateFolderDialogState({ isOpen: true });
+                  }}
                 />
               </Menu>
             </div>
@@ -91,6 +98,11 @@ const FoldersLayout: FC = () => {
                   setCreateFolderDialogState({
                     isOpen: true,
                     parentFolder,
+                  });
+                }}
+                onClickDeleteMenu={(folder) => {
+                  setDeleteFolderDialogState({
+                    folder,
                   });
                 }}
               />
@@ -115,6 +127,16 @@ const FoldersLayout: FC = () => {
               fetcher.load('/folders');
             }}
           />
+          {deleteFolderDialogState.folder != null && (
+            <DeleteFolderModalDialog
+              isOpen={true}
+              folder={deleteFolderDialogState.folder}
+              onClose={() => {
+                setDeleteFolderDialogState({});
+                fetcher.load('/folders');
+              }}
+            />
+          )}
         </FoldersStateContext.Provider>
       </CollectionsStateContext.Provider>
     </div>

@@ -138,7 +138,7 @@ export const CreateFolderModalDialog: FC<{
             </RadioGroup>
           </div>
         </section>
-        <div className="flex gap-1 mt-8">
+        <div className="flex gap-1.5 mt-8">
           <Button onClick={createFolder} disabled={isCreating}>
             {!isCreating ? '作成' : '作成中...'}
           </Button>
