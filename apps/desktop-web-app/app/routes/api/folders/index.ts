@@ -1,5 +1,5 @@
 import type { ActionFunction } from '@remix-run/cloudflare';
-import { Folder } from '~/domain/folder';
+import type { Folder } from '~/domain/folder';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { insertFolder } from '~/features/folder/api/insert-folder.server';
 
@@ -22,8 +22,5 @@ export const action: ActionFunction = async ({ request }) => {
   });
   return new Response(null, {
     status: 201,
-    // headers: {
-    //   Location: `${ENDPOINT}/folders/`
-    // }
   });
 };

@@ -10,13 +10,21 @@ export type FolderNavigationState = {
 
 export const FolderListNavigation: FC<{
   folders: Folder[];
-}> = memo(function FolderListNavigation({ folders }) {
+  onClickCreateMenu: (parentFolderId?: Folder['id']) => void;
+  // onClickEditMenu: () => void;
+  // onClickDeleteMenu: () => void;
+}> = memo(function FolderListNavigation({ folders, onClickCreateMenu }) {
   return (
     <ul>
       {folders.map((folder) => {
         return (
           <li key={folder.id} className="mb-1">
-            <NavigationItem folder={folder} />
+            <NavigationItem
+              folder={folder}
+              onClickCreateMenu={onClickCreateMenu}
+              // onClickEditMenu={onClickEditMenu}
+              // onClickDeleteMenu={onClickDeleteMenu}
+            />
           </li>
         );
       })}

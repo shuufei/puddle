@@ -68,7 +68,12 @@ const FolderPage: FC = () => {
             <FolderConditions folder={folder} />
           </div>
         </div>
-        <FolderMenu position="left" />
+        <FolderMenu
+          position="left"
+          onClickCreateMenu={() => {}}
+          onClickEditMenu={() => {}}
+          onClickDeleteMenu={() => {}}
+        />
       </div>
       <div className="mt-6 flex gap-1 px-4">
         <Tab
@@ -100,7 +105,10 @@ const FolderPage: FC = () => {
       </div>
       <div hidden={activeTab !== 'subfodlers'} className={'p-2 pt-4'}>
         {subFolders.length != 0 ? (
-          <FolderListNavigation folders={subFolders} />
+          <FolderListNavigation
+            folders={subFolders}
+            onClickCreateMenu={() => {}}
+          />
         ) : (
           <div className="flex flex-col items-start gap-4">
             <span className="text-sm text-gray-500">No folders</span>

@@ -2,7 +2,7 @@ import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import type { FC } from 'react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { FolderPlus } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
@@ -10,6 +10,7 @@ import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raind
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
+import { CreateFolderModalDialog } from '~/features/folder/components/create-folder-modal-dialog';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
@@ -43,6 +44,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const FoldersLayout: FC = () => {
   const { folders, collections } = useLoaderData<FoldersLoaderData>();
+  const [createFolderDialogState, setCreateFolderDialogState] = useState<{
+    isOpen: boolean;
+    parentFolderId?: Folder['id'];
+  }>({ isOpen: false });
+  // const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  // const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
   const rootFolders: Folder[] = useMemo(() => {
     return folders.filter((v) => v.parent_folder_id == null);
@@ -66,11 +73,26 @@ const FoldersLayout: FC = () => {
               </Menu>
             </div>
             <div className="mt-2">
-              <FolderListNavigation folders={rootFolders} />
+              <FolderListNavigation
+                folders={rootFolders}
+                onClickCreateMenu={(parentFolderId) => {
+                  setCreateFolderDialogState({
+                    isOpen: true,
+                    parentFolderId,
+                  });
+                }}
+              />
             </div>
           </nav>
           <main className="flex-1">
             <Outlet />
+            <CreateFolderModalDialog
+              collections={collections}
+              isOpen={createFolderDialogState.isOpen}
+              onClose={() => {
+                setCreateFolderDialogState({ isOpen: false });
+              }}
+            />
           </main>
         </FoldersStateContext.Provider>
       </CollectionsStateContext.Provider>

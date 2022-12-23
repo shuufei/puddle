@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react';
 import { useState } from 'react';
 import { Folder } from 'react-feather';
 import type { Collection } from '~/domain/raindrop/collection';
-import { CreateFolderRequestBody } from '~/routes/api/folders';
+import type { CreateFolderRequestBody } from '~/routes/api/folders';
 import { Button } from '~/shared/components/button';
 import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
@@ -21,10 +21,11 @@ const MATCH = {
 } as const;
 type Match = keyof typeof MATCH;
 
-export const CreateFolderModalDialog: FC<{ collections: Collection[] }> = ({
-  collections,
-}) => {
-  const [isOpen, setOpen] = useState(true);
+export const CreateFolderModalDialog: FC<{
+  collections: Collection[];
+  isOpen: boolean;
+  onClose: () => void;
+}> = ({ collections, isOpen, onClose }) => {
   const options: SelectOption[] = [
     {
       value: ALL_COLLECTION_VALUE,
@@ -72,82 +73,70 @@ export const CreateFolderModalDialog: FC<{ collections: Collection[] }> = ({
   }, [collectionId, includeImportant, match]);
 
   return (
-    <>
-      <button
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        open dialog
-      </button>
-      <Dialog
-        isOpen={isOpen}
-        title={'新規フォルダを作成'}
-        titleIcon={<Folder size={'1.25rem'} />}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <div className="mt-4">
-          <TextField
-            label="タイトル"
-            placeholder="フォルダのタイトルを入力"
-            onChange={(value) => {
-              titleValueRef.current = value;
-            }}
-          />
-          <section className="mt-4">
-            <h3 className="text-md font-semibold text-gray-900">条件</h3>
-            <p className="text-xs text-gray-600">
-              指定した条件にマッチする項目が、作成したフォルダに自動で追加されます
-            </p>
-            <div className="mt-3 flex flex-col gap-3">
-              <SelectBox
-                label="コレクション"
-                options={options}
-                onChange={setCollectionId}
-              />
-              <TextField
-                label="タグ"
-                description='#をつけてスペース区切りで指定してください: #tag #"tag name"'
-                placeholder={`#tag #"tag name"`}
-                onChange={(value) => {
-                  tagValueRef.current = value;
-                }}
-              />
-              <Checkbox
-                label="include important"
-                onChange={setIncludeImportant}
-              >
-                <ImportantIcon size="1rem" />
-              </Checkbox>
-              <RadioGroup
-                label="一致"
-                defaultValue="and"
-                onChange={(value) => {
-                  setMatch(value as Match);
-                }}
-              >
-                <div className="flex gap-4">
-                  <Radio value={MATCH.and}>AND</Radio>
-                  <Radio value={MATCH.or}>OR</Radio>
-                </div>
-              </RadioGroup>
-            </div>
-          </section>
-          <div className="flex gap-1 mt-8">
-            <Button onClick={createFolder}>作成</Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setOpen(false);
+    <Dialog
+      isOpen={isOpen}
+      title={'新規フォルダを作成'}
+      titleIcon={<Folder size={'1.25rem'} />}
+      onClose={() => {
+        onClose();
+      }}
+    >
+      <div className="mt-4">
+        <TextField
+          label="タイトル"
+          placeholder="フォルダのタイトルを入力"
+          onChange={(value) => {
+            titleValueRef.current = value;
+          }}
+        />
+        <section className="mt-4">
+          <h3 className="text-md font-semibold text-gray-900">条件</h3>
+          <p className="text-xs text-gray-600">
+            指定した条件にマッチする項目が、作成したフォルダに自動で追加されます
+          </p>
+          <div className="mt-3 flex flex-col gap-3">
+            <SelectBox
+              label="コレクション"
+              options={options}
+              onChange={setCollectionId}
+            />
+            <TextField
+              label="タグ"
+              description='#をつけてスペース区切りで指定してください: #tag #"tag name"'
+              placeholder={`#tag #"tag name"`}
+              onChange={(value) => {
+                tagValueRef.current = value;
+              }}
+            />
+            <Checkbox label="include important" onChange={setIncludeImportant}>
+              <ImportantIcon size="1rem" />
+            </Checkbox>
+            <RadioGroup
+              label="一致"
+              defaultValue="and"
+              onChange={(value) => {
+                setMatch(value as Match);
               }}
             >
-              キャンセル
-            </Button>
+              <div className="flex gap-4">
+                <Radio value={MATCH.and}>AND</Radio>
+                <Radio value={MATCH.or}>OR</Radio>
+              </div>
+            </RadioGroup>
           </div>
+        </section>
+        <div className="flex gap-1 mt-8">
+          <Button onClick={createFolder}>作成</Button>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            キャンセル
+          </Button>
         </div>
-      </Dialog>
-    </>
+      </div>
+    </Dialog>
   );
 };

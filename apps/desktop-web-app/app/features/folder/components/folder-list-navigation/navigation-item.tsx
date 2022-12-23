@@ -21,12 +21,11 @@ type FolderNavigationState = {
 
 export const NavigationItem: FC<{
   folder: Folder;
-}> = memo(function NavigatioinItem({ folder }) {
+  onClickCreateMenu: (parentFolderId?: Folder['id']) => void;
+}> = memo(function NavigatioinItem({ folder, onClickCreateMenu }) {
   const { folders: allFolders } = useContext(FoldersStateContext);
-
   const folderStateKey = `navstate/folder/${folder.id}`;
   const [opened, setOpened] = useState<boolean | undefined>(undefined);
-
   const subFolders = useMemo(() => {
     return allFolders.filter((v) => v.parent_folder_id === folder.id);
   }, [allFolders, folder.id]);
@@ -93,12 +92,22 @@ export const NavigationItem: FC<{
           </div>
         </div>
         <div className="opacity-0 group-hover:opacity-100 focus-within:opacity-100">
-          <FolderMenu position="left" />
+          <FolderMenu
+            position="left"
+            onClickCreateMenu={() => {
+              onClickCreateMenu(folder.id);
+            }}
+            onClickEditMenu={() => {}}
+            onClickDeleteMenu={() => {}}
+          />
         </div>
       </NavLink>
       {opened && subFolders.length > 0 && (
         <div className="pl-6 mt-1">
-          <FolderListNavigation folders={subFolders} />
+          <FolderListNavigation
+            folders={subFolders}
+            onClickCreateMenu={onClickCreateMenu}
+          />
         </div>
       )}
     </>
