@@ -5,11 +5,11 @@ type Variant = 'fill' | 'ghost';
 type Role = 'default' | 'danger';
 
 const getClassNameByVariantAndRole = (variant: Variant, role: Role): string => {
-  const fillBgColor = role === 'default' ? 'bg-gray-900' : 'bg-red-700';
+  const fillBgColor = role === 'default' ? 'bg-gray-900' : 'bg-red-600';
   const fillBgColorHover =
-    role === 'default' ? 'hover:bg-gray-700' : 'hover:bg-red-600';
+    role === 'default' ? 'hover:bg-gray-700' : 'hover:bg-red-500';
   const fillBgColorActive =
-    role === 'default' ? 'active:bg-gray-500' : 'active:bg-red-500';
+    role === 'default' ? 'active:bg-gray-500' : 'active:bg-red-400';
   const fillBgColorDisabled =
     role === 'default' ? 'disabled:bg-gray-400' : 'disabled:bg-red-300';
   const ghostTextColor = role === 'default' ? 'text-gray-900' : 'text-red-700';
