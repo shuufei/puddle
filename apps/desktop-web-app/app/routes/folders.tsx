@@ -1,6 +1,11 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
-import { Outlet, useFetcher, useLoaderData } from '@remix-run/react';
+import {
+  Outlet,
+  useFetcher,
+  useLoaderData,
+  useTransition,
+} from '@remix-run/react';
 import type { FC } from 'react';
 import { useMemo, useState } from 'react';
 import { FolderPlus } from 'react-feather';
@@ -50,6 +55,7 @@ const FoldersLayout: FC = () => {
     isOpen: boolean;
     parentFolderId?: Folder['id'];
   }>({ isOpen: false });
+  const transitioin = useTransition();
 
   const folders = useMemo(() => {
     return fetcher.data?.folders ?? foldersFromLoader;
@@ -91,17 +97,24 @@ const FoldersLayout: FC = () => {
             </div>
           </nav>
           <main className="flex-1">
+            {transitioin.state === 'loading' && (
+              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-white drop-shadow-md rounded border border-gray-100">
+                <span className="text-xs font-semibold text-gray-900">
+                  読み込み中...
+                </span>
+              </div>
+            )}
             <Outlet />
-            <CreateFolderModalDialog
-              collections={collections}
-              isOpen={createFolderDialogState.isOpen}
-              parentFolderId={createFolderDialogState.parentFolderId}
-              onClose={() => {
-                setCreateFolderDialogState({ isOpen: false });
-                fetcher.load('/folders');
-              }}
-            />
           </main>
+          <CreateFolderModalDialog
+            collections={collections}
+            isOpen={createFolderDialogState.isOpen}
+            parentFolderId={createFolderDialogState.parentFolderId}
+            onClose={() => {
+              setCreateFolderDialogState({ isOpen: false });
+              fetcher.load('/folders');
+            }}
+          />
         </FoldersStateContext.Provider>
       </CollectionsStateContext.Provider>
     </div>
