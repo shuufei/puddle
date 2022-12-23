@@ -72,43 +72,43 @@ const FoldersLayout: FC = () => {
   }, [folders]);
 
   return (
-    <div className="flex gap-6">
-      <CollectionsStateContext.Provider value={{ collections }}>
-        <FoldersStateContext.Provider value={{ folders }}>
-          <nav
-            className="p-4"
-            style={{ width: '30vw', minWidth: '18rem', maxWidth: '24rem' }}
-          >
-            <div className="flex items-center px-3 justify-end">
-              <Menu position={'left'}>
-                <MenuContentItemButton
-                  label="フォルダを追加"
-                  icon={<FolderPlus size={'1rem'} />}
-                  role={'normal'}
-                  onClick={() => {
-                    setCreateFolderDialogState({ isOpen: true });
+    <CollectionsStateContext.Provider value={{ collections }}>
+      <FoldersStateContext.Provider value={{ folders }}>
+        <div className="flex  justify-center">
+          <div className="flex gap-6">
+            <nav
+              className="p-4"
+              style={{ width: '30vw', minWidth: '18rem', maxWidth: '24rem' }}
+            >
+              <div className="flex items-center px-3 justify-end">
+                <Menu position={'left'}>
+                  <MenuContentItemButton
+                    label="フォルダを追加"
+                    icon={<FolderPlus size={'1rem'} />}
+                    role={'normal'}
+                    onClick={() => {
+                      setCreateFolderDialogState({ isOpen: true });
+                    }}
+                  />
+                </Menu>
+              </div>
+              <div className="mt-2">
+                <FolderListNavigation
+                  folders={rootFolders}
+                  onClickCreateMenu={(parentFolder) => {
+                    setCreateFolderDialogState({
+                      isOpen: true,
+                      parentFolder,
+                    });
+                  }}
+                  onClickDeleteMenu={(folder) => {
+                    setDeleteFolderDialogState({
+                      folder,
+                    });
                   }}
                 />
-              </Menu>
-            </div>
-            <div className="mt-2">
-              <FolderListNavigation
-                folders={rootFolders}
-                onClickCreateMenu={(parentFolder) => {
-                  setCreateFolderDialogState({
-                    isOpen: true,
-                    parentFolder,
-                  });
-                }}
-                onClickDeleteMenu={(folder) => {
-                  setDeleteFolderDialogState({
-                    folder,
-                  });
-                }}
-              />
-            </div>
-          </nav>
-          <main className="flex-1">
+              </div>
+            </nav>
             {transitioin.state === 'loading' && (
               <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-white drop-shadow-md rounded border border-gray-100">
                 <span className="text-xs font-semibold text-gray-900">
@@ -116,30 +116,35 @@ const FoldersLayout: FC = () => {
                 </span>
               </div>
             )}
-            <Outlet />
-          </main>
-          <CreateFolderModalDialog
-            collections={collections}
-            isOpen={createFolderDialogState.isOpen}
-            parentFolder={createFolderDialogState.parentFolder}
+            <main className="flex-1 max-w-5xl">
+              <Outlet />
+            </main>
+            <div
+              style={{ width: '10vw', minWidth: '8rem', maxWidth: '24rem' }}
+            ></div>
+          </div>
+        </div>
+        <CreateFolderModalDialog
+          collections={collections}
+          isOpen={createFolderDialogState.isOpen}
+          parentFolder={createFolderDialogState.parentFolder}
+          onClose={() => {
+            setCreateFolderDialogState({ isOpen: false });
+            fetcher.load('/folders');
+          }}
+        />
+        {deleteFolderDialogState.folder != null && (
+          <DeleteFolderModalDialog
+            isOpen={true}
+            folder={deleteFolderDialogState.folder}
             onClose={() => {
-              setCreateFolderDialogState({ isOpen: false });
+              setDeleteFolderDialogState({});
               fetcher.load('/folders');
             }}
           />
-          {deleteFolderDialogState.folder != null && (
-            <DeleteFolderModalDialog
-              isOpen={true}
-              folder={deleteFolderDialogState.folder}
-              onClose={() => {
-                setDeleteFolderDialogState({});
-                fetcher.load('/folders');
-              }}
-            />
-          )}
-        </FoldersStateContext.Provider>
-      </CollectionsStateContext.Provider>
-    </div>
+        )}
+      </FoldersStateContext.Provider>
+    </CollectionsStateContext.Provider>
   );
 };
 
