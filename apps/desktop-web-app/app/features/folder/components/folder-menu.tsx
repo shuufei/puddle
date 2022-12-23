@@ -19,7 +19,7 @@ export const FolderMenu: FC<
           icon={<Edit2 size={'1rem'} />}
           role={'normal'}
           onClick={() => {
-            onClickCreateMenu();
+            onClickEditMenu();
           }}
         />
         <MenuContentItemButton
@@ -27,7 +27,7 @@ export const FolderMenu: FC<
           icon={<FolderPlus size={'1rem'} />}
           role={'normal'}
           onClick={() => {
-            onClickEditMenu();
+            onClickCreateMenu();
           }}
         />
         <MenuContentItemButton

@@ -16,8 +16,9 @@ export const Menu: FC<MenuPorps & { children: ReactNode }> = ({
   useEffect(() => {
     const toggleMenuHandler = (event: MouseEvent) => {
       if (
-        menuButtonRef.current?.contains(event.target as Node) ||
-        menuRef.current?.contains(event.target as Node)
+        menuButtonRef.current?.contains(event.target as Node)
+        // ||
+        // menuRef.current?.contains(event.target as Node)
       ) {
         return;
       }

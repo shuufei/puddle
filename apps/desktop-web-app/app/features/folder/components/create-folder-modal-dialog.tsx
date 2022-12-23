@@ -1,7 +1,8 @@
 import type { FC } from 'react';
 import { useCallback, useRef } from 'react';
 import { useState } from 'react';
-import { Folder } from 'react-feather';
+import { Folder as FolderIcon } from 'react-feather';
+import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import type { CreateFolderRequestBody } from '~/routes/api/folders';
 import { Button } from '~/shared/components/button';
@@ -24,8 +25,9 @@ type Match = keyof typeof MATCH;
 export const CreateFolderModalDialog: FC<{
   collections: Collection[];
   isOpen: boolean;
+  parentFolderId?: Folder['id'];
   onClose: () => void;
-}> = ({ collections, isOpen, onClose }) => {
+}> = ({ collections, isOpen, parentFolderId, onClose }) => {
   const options: SelectOption[] = [
     {
       value: ALL_COLLECTION_VALUE,
@@ -44,8 +46,10 @@ export const CreateFolderModalDialog: FC<{
     useState<string>(ALL_COLLECTION_VALUE);
   const [includeImportant, setIncludeImportant] = useState(false);
   const [match, setMatch] = useState<Match>('and');
+  const [isCreating, setCreating] = useState(false);
 
   const createFolder = useCallback(async () => {
+    setCreating(true);
     const tags =
       tagValueRef.current
         ?.split('#')
@@ -64,19 +68,22 @@ export const CreateFolderModalDialog: FC<{
       tags: tags,
       include_important: includeImportant,
       tags_or_search: match === 'or',
+      parent_folder_id: parentFolderId,
     };
     const res = await fetch(`${endpoint}/api/folders`, {
       method: 'POST',
       body: JSON.stringify(body),
     });
     console.log(res.status);
-  }, [collectionId, includeImportant, match]);
+    onClose();
+    setCreating(false);
+  }, [collectionId, includeImportant, match, onClose, parentFolderId]);
 
   return (
     <Dialog
       isOpen={isOpen}
       title={'新規フォルダを作成'}
-      titleIcon={<Folder size={'1.25rem'} />}
+      titleIcon={<FolderIcon size={'1.25rem'} />}
       onClose={() => {
         onClose();
       }}
@@ -126,7 +133,9 @@ export const CreateFolderModalDialog: FC<{
           </div>
         </section>
         <div className="flex gap-1 mt-8">
-          <Button onClick={createFolder}>作成</Button>
+          <Button onClick={createFolder} disabled={isCreating}>
+            {!isCreating ? '作成' : '作成中...'}
+          </Button>
           <Button
             variant="ghost"
             onClick={() => {
