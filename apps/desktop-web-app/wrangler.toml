@@ -18,3 +18,11 @@ ENDPOINT = "http://localhost:4200"
 
 [build]
   command = "npm run build"
+
+[env.production.vars]
+ENDPOINT = "https://puddle-production.digital-shuufei.workers.dev"
+
+[env.production]
+kv_namespaces = [
+  { binding = "RAINDROP_CACHE", id = "1af025d4e6bb4aca9206d07805d02558" }
+]

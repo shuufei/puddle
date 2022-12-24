@@ -5,7 +5,7 @@
     "build": "run-s \"build:*\"",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "deploy": "wrangler publish",
+    "deploy": "wrangler publish --env production",
     "dev:remix": "remix watch",
     "dev:miniflare": "cross-env NODE_ENV=development miniflare ./build/index.js --watch --port 4200",
     "dev:css": "npm run generate:css -- --watch",
