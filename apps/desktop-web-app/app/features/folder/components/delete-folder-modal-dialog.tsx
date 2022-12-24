@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { useCallback, useState } from 'react';
 import { Trash2 } from 'react-feather';
 import type { Folder } from '~/domain/folder';
-import type { FoldersFolderIdActionRequestBody } from '~/routes/api/folders/$folderId';
+import type { DeleteFolderRequestBody } from '~/routes/api/folders/$folderId';
 import { Button } from '~/shared/components/button';
 import { Dialog } from '~/shared/components/dialog';
 import { FolderConditions } from './folder-conditions';
@@ -17,7 +17,7 @@ export const DeleteFolderModalDialog: FC<{
   const deleteFolder = useCallback(async () => {
     setDeleting(true);
     const endpoint = window.ENV.endpoint;
-    const body: FoldersFolderIdActionRequestBody = {
+    const body: DeleteFolderRequestBody = {
       method: 'DELETE',
     };
     await fetch(`${endpoint}/api/folders/${folder.id}`, {

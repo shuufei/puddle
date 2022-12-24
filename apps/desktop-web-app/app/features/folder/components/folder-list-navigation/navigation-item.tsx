@@ -23,10 +23,12 @@ export const NavigationItem: FC<{
   folder: Folder;
   onClickCreateMenu: (parentFolder?: Folder) => void;
   onClickDeleteMenu: (folder: Folder) => void;
+  onClickEditMenu: (folder: Folder) => void;
 }> = memo(function NavigatioinItem({
   folder,
   onClickCreateMenu,
   onClickDeleteMenu,
+  onClickEditMenu,
 }) {
   const { folders: allFolders } = useContext(FoldersStateContext);
   const folderStateKey = `navstate/folder/${folder.id}`;
@@ -103,7 +105,9 @@ export const NavigationItem: FC<{
             onClickCreateMenu={() => {
               onClickCreateMenu(folder);
             }}
-            onClickEditMenu={() => {}}
+            onClickEditMenu={() => {
+              onClickEditMenu(folder);
+            }}
             onClickDeleteMenu={() => {
               onClickDeleteMenu(folder);
             }}
@@ -116,6 +120,7 @@ export const NavigationItem: FC<{
             folders={subFolders}
             onClickCreateMenu={onClickCreateMenu}
             onClickDeleteMenu={onClickDeleteMenu}
+            onClickEditMenu={onClickEditMenu}
           />
         </div>
       )}

@@ -6,9 +6,10 @@ import { useToggleState } from 'react-stately';
 export const Checkbox: FC<{
   children: ReactNode;
   label: string;
+  defaultSelected?: boolean;
   onChange?: (value: boolean) => void;
-}> = ({ children, label, onChange }) => {
-  const state = useToggleState({ onChange });
+}> = ({ children, label, defaultSelected, onChange }) => {
+  const state = useToggleState({ onChange, defaultSelected });
   const ref = useRef(null);
   const { inputProps } = useCheckbox({ 'aria-label': label }, state, ref);
   return (

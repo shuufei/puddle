@@ -6,13 +6,15 @@ export const TextField: FC<{
   label: string;
   description?: string;
   placeholder?: string;
+  defaultValue?: string;
   onChange?: (value: string) => void;
-}> = ({ label, description, placeholder, onChange }) => {
+}> = ({ label, description, placeholder, defaultValue, onChange }) => {
   const inputRef = useRef(null);
   const { labelProps, inputProps, descriptionProps } = useTextField(
     {
       label,
       placeholder,
+      defaultValue,
       onChange: (value) => {
         onChange?.(value);
       },

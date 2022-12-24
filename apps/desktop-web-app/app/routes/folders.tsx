@@ -17,6 +17,7 @@ import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
 import { CreateFolderModalDialog } from '~/features/folder/components/create-folder-modal-dialog';
 import { DeleteFolderModalDialog } from '~/features/folder/components/delete-folder-modal-dialog';
+import { EditFolderModalDialog } from '~/features/folder/components/edit-folder-modal-dialog';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
@@ -58,6 +59,10 @@ const FoldersLayout: FC = () => {
   }>({ isOpen: false });
   const [deleteFolderDialogState, setDeleteFolderDialogState] = useState<{
     folder?: Folder;
+  }>({});
+  const [editFolderDialogState, setEditFolderDialogState] = useState<{
+    folder?: Folder;
+    parentFolder?: Folder;
   }>({});
   const transitioin = useTransition();
 
@@ -106,6 +111,15 @@ const FoldersLayout: FC = () => {
                       folder,
                     });
                   }}
+                  onClickEditMenu={(folder) => {
+                    const parentFolder = folders.find(
+                      (v) => v.id === folder.parent_folder_id
+                    );
+                    setEditFolderDialogState({
+                      folder,
+                      parentFolder,
+                    });
+                  }}
                 />
               </div>
             </nav>
@@ -139,6 +153,18 @@ const FoldersLayout: FC = () => {
             folder={deleteFolderDialogState.folder}
             onClose={() => {
               setDeleteFolderDialogState({});
+              fetcher.load('/folders');
+            }}
+          />
+        )}
+        {editFolderDialogState.folder != null && (
+          <EditFolderModalDialog
+            collections={collections}
+            isOpen={true}
+            folder={editFolderDialogState.folder}
+            parentFolder={editFolderDialogState.parentFolder}
+            onClose={() => {
+              setEditFolderDialogState({});
               fetcher.load('/folders');
             }}
           />
