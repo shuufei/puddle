@@ -13,16 +13,8 @@ import { RadioGroup } from '~/shared/components/radio/radio-group';
 import type { SelectOption } from '~/shared/components/select-box';
 import { SelectBox } from '~/shared/components/select-box';
 import { TextField } from '~/shared/components/text-field';
-
-/**TODO:
- * Domain定義
- */
-const ALL_COLLECTION_VALUE = 'all';
-const MATCH = {
-  and: 'and',
-  or: 'or',
-} as const;
-type Match = keyof typeof MATCH;
+import type { Match } from './folder-form-def';
+import { ALL_COLLECTION_VALUE, MATCH } from './folder-form-def';
 
 export const EditFolderModalDialog: FC<{
   collections: Collection[];
