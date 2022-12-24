@@ -4,7 +4,7 @@ import type { FC } from 'react';
 
 const FoldersPage: FC = () => {
   return (
-    <div className="flex justify-center px-4 p-8 w-full">
+    <div className="flex justify-center px-4 py-8">
       <p className="text-gray-500">フォルダが選択されていません</p>
     </div>
   );

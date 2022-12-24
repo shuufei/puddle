@@ -52,7 +52,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 const FoldersLayout: FC = () => {
   const { folders: foldersFromLoader, collections } =
     useLoaderData<FoldersLoaderData>();
-  const fetcher = useFetcher<FoldersLoaderData>();
+  const foldersFetcher = useFetcher<FoldersLoaderData>();
+  const folderDetailsFetcher = useFetcher<FoldersLoaderData>();
   const [createFolderDialogState, setCreateFolderDialogState] = useState<{
     isOpen: boolean;
     parentFolder?: Folder;
@@ -67,10 +68,10 @@ const FoldersLayout: FC = () => {
   const transitioin = useTransition();
 
   const folders = useMemo(() => {
-    return (fetcher.data?.folders ?? foldersFromLoader).sort(
+    return (foldersFetcher.data?.folders ?? foldersFromLoader).sort(
       (v1, v2) => v1.id - v2.id
     );
-  }, [fetcher.data, foldersFromLoader]);
+  }, [foldersFetcher.data, foldersFromLoader]);
 
   const rootFolders: Folder[] = useMemo(() => {
     return folders.filter((v) => v.parent_folder_id == null);
@@ -79,12 +80,9 @@ const FoldersLayout: FC = () => {
   return (
     <CollectionsStateContext.Provider value={{ collections }}>
       <FoldersStateContext.Provider value={{ folders }}>
-        <div className="flex  justify-center">
-          <div className="flex gap-6">
-            <nav
-              className="p-4"
-              style={{ width: '30vw', minWidth: '18rem', maxWidth: '24rem' }}
-            >
+        <div className="flex justify-center px-4">
+          <div className="flex gap-6 w-full max-w-10xl">
+            <nav className="p-4 w-96">
               <div className="flex items-center px-3 justify-end">
                 <Menu position={'left'}>
                   <MenuContentItemButton
@@ -130,7 +128,7 @@ const FoldersLayout: FC = () => {
                 </span>
               </div>
             )}
-            <main className="flex-1 max-w-5xl">
+            <main className="flex-1">
               <Outlet />
             </main>
             <div
@@ -144,7 +142,7 @@ const FoldersLayout: FC = () => {
           parentFolder={createFolderDialogState.parentFolder}
           onClose={() => {
             setCreateFolderDialogState({ isOpen: false });
-            fetcher.load('/folders');
+            foldersFetcher.load('/folders');
           }}
         />
         {deleteFolderDialogState.folder != null && (
@@ -153,7 +151,7 @@ const FoldersLayout: FC = () => {
             folder={deleteFolderDialogState.folder}
             onClose={() => {
               setDeleteFolderDialogState({});
-              fetcher.load('/folders');
+              foldersFetcher.load('/folders');
             }}
           />
         )}
@@ -164,8 +162,13 @@ const FoldersLayout: FC = () => {
             folder={editFolderDialogState.folder}
             parentFolder={editFolderDialogState.parentFolder}
             onClose={() => {
+              foldersFetcher.load('/folders');
+              // TODO: アプリ内の/folders/:idを更新したい
+              folderDetailsFetcher.load(
+                `/folders/${editFolderDialogState.folder?.id}?disableCache=true`
+              );
+              // folderDetailsFetcher.
               setEditFolderDialogState({});
-              fetcher.load('/folders');
             }}
           />
         )}
