@@ -12,11 +12,12 @@ export const RaindropListItem: FC<{
     >
       <img
         src={raindropItem.cover}
-        alt={raindropItem.title}
+        alt=""
         className="w-32 h-16 object-cover border border-gray-200"
+        loading="lazy"
       />
       <div className="flex-1">
-        <h3 className="text-sm font-semibold">{raindropItem.title}</h3>
+        <h2 className="text-sm font-semibold">{raindropItem.title}</h2>
         <p className="text-xs mt-1 text-gray-500">{raindropItem.excerpt}</p>
         <div className="flex gap-2 gap-y-0 text-xs text-gray-900 items-center flex-wrap mt-2">
           {raindropItem.tags.map((tag) => {

@@ -38,6 +38,7 @@ export const Menu: FC<MenuPorps & { children: ReactNode }> = ({
         ref={menuButtonRef}
         data-dropdown-toggle="menu"
         className="p-1 rounded-sm hover:bg-gray-100 active:bg-gray-200"
+        aria-label={isOpened ? 'close menu' : 'open menu'}
         onClick={(event) => {
           event.preventDefault();
           setOpened(!isOpened);
