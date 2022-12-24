@@ -74,6 +74,7 @@ export const NavigationItem: FC<{
         {subFolders.length > 0 ? (
           <button
             className="text-sm p-0.5 text-gray-900 hover:text-white hover:bg-gray-900 rounded-sm"
+            aria-label={opened ? 'close sub folders' : 'open sub folders'}
             onClick={toggleOpen}
           >
             {opened ? (
