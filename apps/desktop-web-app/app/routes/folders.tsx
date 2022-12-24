@@ -67,10 +67,10 @@ const FoldersLayout: FC = () => {
   const transitioin = useTransition();
 
   const folders = useMemo(() => {
-    return fetcher.data?.folders ?? foldersFromLoader;
+    return (fetcher.data?.folders ?? foldersFromLoader).sort(
+      (v1, v2) => v1.id - v2.id
+    );
   }, [fetcher.data, foldersFromLoader]);
-  // const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
-  // const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
   const rootFolders: Folder[] = useMemo(() => {
     return folders.filter((v) => v.parent_folder_id == null);

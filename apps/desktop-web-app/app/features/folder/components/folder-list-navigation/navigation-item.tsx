@@ -34,7 +34,9 @@ export const NavigationItem: FC<{
   const folderStateKey = `navstate/folder/${folder.id}`;
   const [opened, setOpened] = useState<boolean | undefined>(undefined);
   const subFolders = useMemo(() => {
-    return allFolders.filter((v) => v.parent_folder_id === folder.id);
+    return allFolders
+      .filter((v) => v.parent_folder_id === folder.id)
+      .sort((v1, v2) => v1.id - v2.id);
   }, [allFolders, folder.id]);
 
   useEffect(() => {
