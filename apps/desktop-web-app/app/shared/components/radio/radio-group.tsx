@@ -13,7 +13,7 @@ export const RadioGroup: FC<{
   const { radioGroupProps, labelProps } = useRadioGroup({ label }, state);
   return (
     <div {...radioGroupProps}>
-      <span className="text-sm text-gray-900" {...labelProps}>
+      <span className="text-xs text-gray-900" {...labelProps}>
         {label}
       </span>
       <RadioContext.Provider value={state}>

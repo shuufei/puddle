@@ -3,8 +3,8 @@ import { json } from '@remix-run/cloudflare';
 import { useCatch, useLoaderData, useNavigate } from '@remix-run/react';
 import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules';
 import type { FC } from 'react';
-import { useEffect } from 'react';
-import { useContext, useState } from 'react';
+import { useMemo } from 'react';
+import { useContext, useEffect, useState } from 'react';
 // import { useState } from 'react';
 import type { Folder } from '~/domain/folder';
 import type { Item } from '~/domain/raindrop/item';
@@ -25,6 +25,8 @@ import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
 // import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { FolderMenu } from '~/features/folder/components/folder-menu';
 import { RaindropListItem } from '~/features/folder/components/raindrop-list-item';
+import type { SortKey } from '~/features/folder/components/sort-items-button';
+import { SortItemsButton } from '~/features/folder/components/sort-items-button';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
 // import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
@@ -33,6 +35,38 @@ type LoaderData = {
   folder: Folder;
   items: Item[];
   // subFolders: Folder[];
+};
+
+const DEFAULT_SORT_KEY: SortKey = 'createdDesc';
+
+const sortItems = (items: Item[], sortKey: SortKey): Item[] => {
+  switch (sortKey) {
+    case 'lastUddateAsc':
+      return [...items].sort(
+        (v1, v2) =>
+          new Date(v1.lastUpdate).valueOf() - new Date(v2.lastUpdate).valueOf()
+      );
+    case 'lastUddateDesc':
+      return [...items].sort(
+        (v1, v2) =>
+          new Date(v2.lastUpdate).valueOf() - new Date(v1.lastUpdate).valueOf()
+      );
+    case 'important':
+      return [...items].sort(
+        (v1, v2) => (v2.important ? 1 : 0) - (v1.important ? 1 : 0)
+      );
+    case 'createdAsc':
+      return [...items].sort(
+        (v1, v2) =>
+          new Date(v1.created).valueOf() - new Date(v2.created).valueOf()
+      );
+    case 'createdDesc':
+    default:
+      return [...items].sort(
+        (v1, v2) =>
+          new Date(v2.created).valueOf() - new Date(v1.created).valueOf()
+      );
+  }
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -79,46 +113,62 @@ const FolderPage: FC = () => {
   const [editFolderDialogState, setEditFolderDialogState] =
     useState<EditFolderDialogState>({});
   const { folders } = useContext(FoldersStateContext);
+  const [sortKey, setSortKey] = useState<SortKey>(DEFAULT_SORT_KEY);
+
+  const sortedItems = useMemo(() => {
+    return sortItems(items, sortKey);
+  }, [items, sortKey]);
 
   return (
     <>
-      <div className="p-4">
-        <div className="flex justify-between pr-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
-            <div className="mt-1">
-              <FolderConditions folder={folder} />
+      <div className="">
+        <header className="sticky top-0 bg-white px-2 pt-3 pb-1.5 border-b-2 border-gray-900">
+          <div className="flex justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {folder.title}
+              </h1>
+              <div className="mt-1">
+                <FolderConditions folder={folder} />
+              </div>
             </div>
+            <FolderMenu
+              position="left"
+              onClickCreateMenu={() => {
+                setCreateFolderDialogState({
+                  isOpen: true,
+                  parentFolder: folder,
+                });
+              }}
+              onClickDeleteMenu={() => {
+                const hasSubFolders =
+                  folders.find((v) => v.parent_folder_id === folder.id) != null;
+                setDeleteFolderDialogState({
+                  folder,
+                  hasSubFolders,
+                });
+              }}
+              onClickEditMenu={() => {
+                const parentFolder = folders.find(
+                  (v) => v.id === folder.parent_folder_id
+                );
+                setEditFolderDialogState({
+                  folder,
+                  parentFolder,
+                });
+              }}
+            />
           </div>
-          <FolderMenu
-            position="left"
-            onClickCreateMenu={() => {
-              setCreateFolderDialogState({
-                isOpen: true,
-                parentFolder: folder,
-              });
-            }}
-            onClickDeleteMenu={() => {
-              const hasSubFolders =
-                folders.find((v) => v.parent_folder_id === folder.id) != null;
-              setDeleteFolderDialogState({
-                folder,
-                hasSubFolders,
-              });
-            }}
-            onClickEditMenu={() => {
-              const parentFolder = folders.find(
-                (v) => v.id === folder.parent_folder_id
-              );
-              setEditFolderDialogState({
-                folder,
-                parentFolder,
-              });
-            }}
-          />
-        </div>
-        <ul className="mt-6">
-          {items.map((item) => {
+          <div className="mt-3">
+            <SortItemsButton
+              sortKey={sortKey}
+              defaultSortKey={DEFAULT_SORT_KEY}
+              onChange={(key) => setSortKey(key)}
+            />
+          </div>
+        </header>
+        <ul className="mt-4 px-1 pb-8">
+          {sortedItems.map((item) => {
             return (
               <li key={item._id} className="mb-3">
                 <RaindropListItem raindropItem={item} />
