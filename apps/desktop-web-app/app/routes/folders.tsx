@@ -4,8 +4,6 @@ import {
   Outlet,
   useFetcher,
   useLoaderData,
-  useNavigate,
-  useParams,
   useTransition,
 } from '@remix-run/react';
 import type { FC } from 'react';
@@ -17,9 +15,12 @@ import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raind
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
-import { CreateFolderModalDialog } from '~/features/folder/components/create-folder-modal-dialog';
-import { DeleteFolderModalDialog } from '~/features/folder/components/delete-folder-modal-dialog';
-import { EditFolderModalDialog } from '~/features/folder/components/edit-folder-modal-dialog';
+import type {
+  CreateFolderDialogState,
+  DeleteFolderDialogState,
+  EditFolderDialogState,
+} from '~/features/folder/components/folder-dialogs';
+import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
@@ -61,20 +62,13 @@ const FoldersLayout: FC = () => {
   const { folders: foldersFromLoader, collections } =
     useLoaderData<FoldersLoaderData>();
   const foldersFetcher = useFetcher<FoldersLoaderData>();
-  const [createFolderDialogState, setCreateFolderDialogState] = useState<{
-    isOpen: boolean;
-    parentFolder?: Folder;
-  }>({ isOpen: false });
-  const [deleteFolderDialogState, setDeleteFolderDialogState] = useState<{
-    folder?: Folder;
-  }>({});
-  const [editFolderDialogState, setEditFolderDialogState] = useState<{
-    folder?: Folder;
-    parentFolder?: Folder;
-  }>({});
+  const [createFolderDialogState, setCreateFolderDialogState] =
+    useState<CreateFolderDialogState>({ isOpen: false });
+  const [deleteFolderDialogState, setDeleteFolderDialogState] =
+    useState<DeleteFolderDialogState>({});
+  const [editFolderDialogState, setEditFolderDialogState] =
+    useState<EditFolderDialogState>({});
   const transitioin = useTransition();
-  const navigate = useNavigate();
-  const params = useParams();
 
   const folders = useMemo(() => {
     return (foldersFetcher.data?.folders ?? foldersFromLoader).sort(
@@ -145,44 +139,20 @@ const FoldersLayout: FC = () => {
             ></div>
           </div>
         </div>
-        <CreateFolderModalDialog
-          collections={collections}
-          isOpen={createFolderDialogState.isOpen}
-          parentFolder={createFolderDialogState.parentFolder}
-          onClose={() => {
+        <FolderDialogs
+          createFolderDialogState={createFolderDialogState}
+          editFolderDialogState={editFolderDialogState}
+          deleteFolderDialogState={deleteFolderDialogState}
+          onCloseCreateFolderDialog={() => {
             setCreateFolderDialogState({ isOpen: false });
-            foldersFetcher.load('/folders');
+          }}
+          onCloseEditFolderDialog={() => {
+            setEditFolderDialogState({});
+          }}
+          onCloseDeleteFolderDialog={() => {
+            setDeleteFolderDialogState({});
           }}
         />
-        {deleteFolderDialogState.folder != null && (
-          <DeleteFolderModalDialog
-            isOpen={true}
-            folder={deleteFolderDialogState.folder}
-            onClose={() => {
-              setDeleteFolderDialogState({});
-              foldersFetcher.load('/folders');
-            }}
-          />
-        )}
-        {editFolderDialogState.folder != null && (
-          <EditFolderModalDialog
-            collections={collections}
-            isOpen={true}
-            folder={editFolderDialogState.folder}
-            parentFolder={editFolderDialogState.parentFolder}
-            onClose={() => {
-              const reloadPath =
-                params.folderId != null
-                  ? `/folders/${params.folderId}`
-                  : '/folders';
-              // NOTE:必要なデータを再ロード
-              navigate(reloadPath, {
-                replace: true,
-              });
-              setEditFolderDialogState({});
-            }}
-          />
-        )}
       </FoldersStateContext.Provider>
     </CollectionsStateContext.Provider>
   );

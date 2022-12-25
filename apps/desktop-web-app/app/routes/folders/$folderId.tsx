@@ -3,6 +3,7 @@ import { json } from '@remix-run/cloudflare';
 import { useCatch, useLoaderData } from '@remix-run/react';
 import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules';
 import type { FC } from 'react';
+import { useContext, useState } from 'react';
 // import { useState } from 'react';
 import type { Folder } from '~/domain/folder';
 import type { Item } from '~/domain/raindrop/item';
@@ -14,9 +15,16 @@ import { getFolderItems } from '~/features/folder/api/get-items.server';
 // import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
 // import { CreateFolderButton } from '~/features/folder/components/create-folder-button';
 import { FolderConditions } from '~/features/folder/components/folder-conditions';
+import type {
+  CreateFolderDialogState,
+  DeleteFolderDialogState,
+  EditFolderDialogState,
+} from '~/features/folder/components/folder-dialogs';
+import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
 // import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { FolderMenu } from '~/features/folder/components/folder-menu';
 import { RaindropListItem } from '~/features/folder/components/raindrop-list-item';
+import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
 // import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 
@@ -63,37 +71,63 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 const FolderPage: FC = () => {
   const { folder, items } = useLoaderData<LoaderData>();
   // const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
+  const [createFolderDialogState, setCreateFolderDialogState] =
+    useState<CreateFolderDialogState>({ isOpen: false });
+  const [deleteFolderDialogState, setDeleteFolderDialogState] =
+    useState<DeleteFolderDialogState>({});
+  const [editFolderDialogState, setEditFolderDialogState] =
+    useState<EditFolderDialogState>({});
+  const { folders } = useContext(FoldersStateContext);
+
   return (
-    <div className="p-4">
-      <div className="flex justify-between pr-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
-          <div className="mt-1">
-            <FolderConditions folder={folder} />
+    <>
+      <div className="p-4">
+        <div className="flex justify-between pr-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{folder.title}</h1>
+            <div className="mt-1">
+              <FolderConditions folder={folder} />
+            </div>
           </div>
+          <FolderMenu
+            position="left"
+            onClickCreateMenu={() => {
+              setCreateFolderDialogState({
+                isOpen: true,
+                parentFolder: folder,
+              });
+            }}
+            onClickDeleteMenu={() => {
+              setDeleteFolderDialogState({
+                folder,
+              });
+            }}
+            onClickEditMenu={() => {
+              const parentFolder = folders.find(
+                (v) => v.id === folder.parent_folder_id
+              );
+              setEditFolderDialogState({
+                folder,
+                parentFolder,
+              });
+            }}
+          />
         </div>
-        <FolderMenu
-          position="left"
-          onClickCreateMenu={() => {}}
-          onClickEditMenu={() => {}}
-          onClickDeleteMenu={() => {}}
-        />
-      </div>
-      <ul className="mt-6">
-        {items.map((item) => {
-          return (
-            <li key={item._id} className="mb-3">
-              <RaindropListItem raindropItem={item} />
-            </li>
-          );
-        })}
-      </ul>
-      {items.length === 0 && (
-        <p className=" text-sm text-gray-600 text-center">
-          アイテムがありません
-        </p>
-      )}
-      {/* <div className="mt-6 flex gap-1 px-4">
+        <ul className="mt-6">
+          {items.map((item) => {
+            return (
+              <li key={item._id} className="mb-3">
+                <RaindropListItem raindropItem={item} />
+              </li>
+            );
+          })}
+        </ul>
+        {items.length === 0 && (
+          <p className=" text-sm text-gray-600 text-center">
+            アイテムがありません
+          </p>
+        )}
+        {/* <div className="mt-6 flex gap-1 px-4">
         <Tab
           label="items"
           isActive={activeTab === 'items'}
@@ -134,7 +168,22 @@ const FolderPage: FC = () => {
           </div>
         )}
       </div> */}
-    </div>
+      </div>
+      <FolderDialogs
+        createFolderDialogState={createFolderDialogState}
+        editFolderDialogState={editFolderDialogState}
+        deleteFolderDialogState={deleteFolderDialogState}
+        onCloseCreateFolderDialog={() => {
+          setCreateFolderDialogState({ isOpen: false });
+        }}
+        onCloseEditFolderDialog={() => {
+          setEditFolderDialogState({});
+        }}
+        onCloseDeleteFolderDialog={() => {
+          setDeleteFolderDialogState({});
+        }}
+      />
+    </>
   );
 };
 
