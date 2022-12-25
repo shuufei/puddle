@@ -1,8 +1,9 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
-import { useCatch, useLoaderData } from '@remix-run/react';
+import { useCatch, useLoaderData, useNavigate } from '@remix-run/react';
 import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules';
 import type { FC } from 'react';
+import { useEffect } from 'react';
 import { useContext, useState } from 'react';
 // import { useState } from 'react';
 import type { Folder } from '~/domain/folder';
@@ -194,6 +195,14 @@ export default FolderPage;
 
 export const CatchBoundary: CatchBoundaryComponent = () => {
   const caught = useCatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (caught.status === 404) {
+      navigate('/folders');
+    }
+  }, [caught.status, navigate]);
+
   return (
     <div className="p-4 text-center">
       <h2>
