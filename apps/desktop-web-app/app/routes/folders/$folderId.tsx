@@ -88,6 +88,11 @@ const FolderPage: FC = () => {
           );
         })}
       </ul>
+      {items.length === 0 && (
+        <p className=" text-sm text-gray-600 text-center">
+          アイテムがありません
+        </p>
+      )}
       {/* <div className="mt-6 flex gap-1 px-4">
         <Tab
           label="items"

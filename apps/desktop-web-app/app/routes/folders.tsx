@@ -1,9 +1,11 @@
-import type { LoaderFunction } from '@remix-run/cloudflare';
+import type { ActionFunction, LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import {
   Outlet,
   useFetcher,
   useLoaderData,
+  useNavigate,
+  useParams,
   useTransition,
 } from '@remix-run/react';
 import type { FC } from 'react';
@@ -30,6 +32,12 @@ export type FoldersLoaderData = {
   collections: Collection[];
 };
 
+export const action: ActionFunction = async ({ request }) => {
+  const body = await request.formData();
+  console.log('--- body: ', body);
+  return new Response(null, { status: 204 });
+};
+
 export const loader: LoaderFunction = async ({ request }) => {
   try {
     const [{ userId }, { accessToken }] = await Promise.all([
@@ -53,7 +61,6 @@ const FoldersLayout: FC = () => {
   const { folders: foldersFromLoader, collections } =
     useLoaderData<FoldersLoaderData>();
   const foldersFetcher = useFetcher<FoldersLoaderData>();
-  const folderDetailsFetcher = useFetcher<FoldersLoaderData>();
   const [createFolderDialogState, setCreateFolderDialogState] = useState<{
     isOpen: boolean;
     parentFolder?: Folder;
@@ -66,6 +73,8 @@ const FoldersLayout: FC = () => {
     parentFolder?: Folder;
   }>({});
   const transitioin = useTransition();
+  const navigate = useNavigate();
+  const params = useParams();
 
   const folders = useMemo(() => {
     return (foldersFetcher.data?.folders ?? foldersFromLoader).sort(
@@ -122,7 +131,7 @@ const FoldersLayout: FC = () => {
               </div>
             </nav>
             {transitioin.state === 'loading' && (
-              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-white drop-shadow-md rounded border border-gray-100">
+              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-100 drop-shadow-md rounded border border-gray-100">
                 <span className="text-xs font-semibold text-gray-900">
                   読み込み中...
                 </span>
@@ -162,12 +171,14 @@ const FoldersLayout: FC = () => {
             folder={editFolderDialogState.folder}
             parentFolder={editFolderDialogState.parentFolder}
             onClose={() => {
-              foldersFetcher.load('/folders');
-              // TODO: アプリ内の/folders/:idを更新したい
-              folderDetailsFetcher.load(
-                `/folders/${editFolderDialogState.folder?.id}?disableCache=true`
-              );
-              // folderDetailsFetcher.
+              const reloadPath =
+                params.folderId != null
+                  ? `/folders/${params.folderId}`
+                  : '/folders';
+              // NOTE:必要なデータを再ロード
+              navigate(reloadPath, {
+                replace: true,
+              });
               setEditFolderDialogState({});
             }}
           />

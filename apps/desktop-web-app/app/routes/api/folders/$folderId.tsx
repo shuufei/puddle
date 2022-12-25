@@ -1,4 +1,4 @@
-import type { ActionFunction } from '@remix-run/cloudflare';
+import { ActionFunction } from '@remix-run/cloudflare';
 import type { Folder } from '~/domain/folder';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { deleteFolder } from '~/features/folder/api/delete-folder.server';
@@ -29,6 +29,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
     case 'PUT':
       await updateFolder(body.folder, userId);
+      const cacheKey = `users/${userId}/folder/${folderId}/items`;
+      await RAINDROP_CACHE.delete(cacheKey);
       return new Response(null, {
         status: 204,
       });

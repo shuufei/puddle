@@ -52,7 +52,7 @@ export const EditFolderModalDialog: FC<{
   );
   const [isUpdating, setUpdating] = useState(false);
 
-  const createFolder = useCallback(async () => {
+  const editFolder = useCallback(async () => {
     setUpdating(true);
     const tags =
       tagValueRef.current
@@ -154,7 +154,7 @@ export const EditFolderModalDialog: FC<{
           </div>
         </section>
         <div className="flex gap-1.5 mt-8">
-          <Button onClick={createFolder} disabled={isUpdating}>
+          <Button onClick={editFolder} disabled={isUpdating}>
             {!isUpdating ? '更新' : '更新中...'}
           </Button>
           <Button
