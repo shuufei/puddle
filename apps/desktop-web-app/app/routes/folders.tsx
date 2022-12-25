@@ -1,4 +1,5 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
+import { redirect } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import {
   Outlet,
@@ -38,6 +39,9 @@ export type FoldersLoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  if (ENABLED_APP === 'false') {
+    return redirect('/service-suspended');
+  }
   try {
     const [user, { accessToken }] = await Promise.all([
       getRequestUser(request),

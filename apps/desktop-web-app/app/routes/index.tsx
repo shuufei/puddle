@@ -1,4 +1,5 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
+import { redirect } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 import { useEffect } from 'react';
@@ -13,6 +14,9 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  if (ENABLED_APP === 'false') {
+    return redirect('/service-suspended');
+  }
   const data: LoaderData = {
     env: {
       supabaseUrl: NEXT_PUBLIC_SUPABASE_URL,

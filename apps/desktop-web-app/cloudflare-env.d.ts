@@ -5,3 +5,4 @@ declare const RAINDROP_CLIENT_ID: string;
 declare const RAINDROP_CLIENT_SECRET: string;
 declare const ENDPOINT: string;
 declare const RAINDROP_CACHE: KVNamespace;
+declare const ENABLED_APP: 'true' | 'false';

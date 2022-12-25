@@ -11,7 +11,7 @@ kv_namespaces = [
 
 [vars]
 ENDPOINT = "http://localhost:4200"
-
+ENABLED_APP = 'true'
 
 [site]
   bucket = "./public"
@@ -21,6 +21,7 @@ ENDPOINT = "http://localhost:4200"
 
 [env.production.vars]
 ENDPOINT = "https://puddle-production.digital-shuufei.workers.dev"
+ENABLED_APP = 'false'
 
 [env.production]
 kv_namespaces = [
