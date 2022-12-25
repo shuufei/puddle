@@ -9,7 +9,7 @@ type DecodedAccessToken = {
   exp: number;
   email: string;
   user_metadata: {
-    avater_url: string;
+    avatar_url: string;
     email: string;
     name: string;
   };
@@ -23,7 +23,8 @@ export const getRequestUser = async (request: Request): Promise<User> => {
     return {
       id: decoded.sub,
       name: decoded.user_metadata.name,
-      avaterUrl: decoded.user_metadata.avater_url,
+      email: decoded.user_metadata.email,
+      avaterUrl: decoded.user_metadata.avatar_url,
     };
   } catch (error) {
     console.error(error);

@@ -11,6 +11,7 @@ import { useMemo, useState } from 'react';
 import { FolderPlus } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
+import type { User } from '~/domain/user';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
 import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
@@ -24,6 +25,7 @@ import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
+import { Profile } from '~/features/user/components/profile';
 import { Menu } from '~/shared/components/menu';
 import { MenuContentItemButton } from '~/shared/components/menu/menu-content-item-button';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
@@ -31,21 +33,22 @@ import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 export type FoldersLoaderData = {
   folders: Folder[];
   collections: Collection[];
+  me: User;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
-    const [{ id: userId }, { accessToken }] = await Promise.all([
+    const [user, { accessToken }] = await Promise.all([
       getRequestUser(request),
       getRequestRaindropAccessToken(request),
     ]);
     const [foldersRes, collectionsRes] = await Promise.all([
-      getFolders(userId),
-      getCollections({ userId, raindropAccessToken: accessToken }),
+      getFolders(user.id),
+      getCollections({ userId: user.id, raindropAccessToken: accessToken }),
     ]);
     const folders = foldersRes.data.data as Folder[];
     const collections = collectionsRes.collections;
-    const response: FoldersLoaderData = { folders, collections };
+    const response: FoldersLoaderData = { folders, collections, me: user };
     return json(response);
   } catch (error) {
     return handleLoaderError(error);
@@ -53,8 +56,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 const FoldersLayout: FC = () => {
-  const { folders: foldersFromLoader, collections } =
-    useLoaderData<FoldersLoaderData>();
+  const {
+    folders: foldersFromLoader,
+    collections,
+    me,
+  } = useLoaderData<FoldersLoaderData>();
   const foldersFetcher = useFetcher<FoldersLoaderData>();
   const [createFolderDialogState, setCreateFolderDialogState] =
     useState<CreateFolderDialogState>({ isOpen: false });
@@ -79,48 +85,51 @@ const FoldersLayout: FC = () => {
       <FoldersStateContext.Provider value={{ folders }}>
         <div className="flex justify-center px-4">
           <div className="flex gap-6 w-full max-w-10xl">
-            <nav className="p-4 w-96">
-              <div className="flex items-center px-3 justify-end">
-                <Menu position={'left'}>
-                  <MenuContentItemButton
-                    label="フォルダを追加"
-                    icon={<FolderPlus size={'1rem'} />}
-                    role={'normal'}
-                    onClick={() => {
-                      setCreateFolderDialogState({ isOpen: true });
+            <nav className="p-4 w-96 h-screen flex flex-col justify-between gap-2 sticky top-0">
+              <div className="flex-1 overflow-y-scroll">
+                <div className="flex items-center px-3 justify-end">
+                  <Menu position={'left'}>
+                    <MenuContentItemButton
+                      label="フォルダを追加"
+                      icon={<FolderPlus size={'1rem'} />}
+                      role={'normal'}
+                      onClick={() => {
+                        setCreateFolderDialogState({ isOpen: true });
+                      }}
+                    />
+                  </Menu>
+                </div>
+                <div className="mt-2">
+                  <FolderListNavigation
+                    folders={rootFolders}
+                    onClickCreateMenu={(parentFolder) => {
+                      setCreateFolderDialogState({
+                        isOpen: true,
+                        parentFolder,
+                      });
+                    }}
+                    onClickDeleteMenu={(folder) => {
+                      const hasSubFolders =
+                        folders.find((v) => v.parent_folder_id === folder.id) !=
+                        null;
+                      setDeleteFolderDialogState({
+                        folder,
+                        hasSubFolders,
+                      });
+                    }}
+                    onClickEditMenu={(folder) => {
+                      const parentFolder = folders.find(
+                        (v) => v.id === folder.parent_folder_id
+                      );
+                      setEditFolderDialogState({
+                        folder,
+                        parentFolder,
+                      });
                     }}
                   />
-                </Menu>
+                </div>
               </div>
-              <div className="mt-2">
-                <FolderListNavigation
-                  folders={rootFolders}
-                  onClickCreateMenu={(parentFolder) => {
-                    setCreateFolderDialogState({
-                      isOpen: true,
-                      parentFolder,
-                    });
-                  }}
-                  onClickDeleteMenu={(folder) => {
-                    const hasSubFolders =
-                      folders.find((v) => v.parent_folder_id === folder.id) !=
-                      null;
-                    setDeleteFolderDialogState({
-                      folder,
-                      hasSubFolders,
-                    });
-                  }}
-                  onClickEditMenu={(folder) => {
-                    const parentFolder = folders.find(
-                      (v) => v.id === folder.parent_folder_id
-                    );
-                    setEditFolderDialogState({
-                      folder,
-                      parentFolder,
-                    });
-                  }}
-                />
-              </div>
+              <Profile me={me} />
             </nav>
             {transitioin.state === 'loading' && (
               <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-100 drop-shadow-md rounded border border-gray-100">
