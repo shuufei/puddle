@@ -168,9 +168,7 @@ const FoldersLayout: FC = () => {
             <main className="flex-1">
               <Outlet />
             </main>
-            <div
-              style={{ width: '10vw', minWidth: '8rem', maxWidth: '24rem' }}
-            ></div>
+            <div className="sm:w-7 lg:w-20"></div>
           </div>
         </div>
         <FolderDialogs
