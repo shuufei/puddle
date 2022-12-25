@@ -9,7 +9,7 @@ import type { Folder } from '~/domain/folder';
 import type { Item } from '~/domain/raindrop/item';
 import { NotFound } from '~/errors/not-found';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
-import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
+import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { getFolderById } from '~/features/folder/api/get-folder-by-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
 // import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
@@ -36,7 +36,7 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   try {
-    const { userId } = await getRequestUserId(request);
+    const { id: userId } = await getRequestUser(request);
     const { accessToken } = await getRequestRaindropAccessToken(request);
     const folderId = Number(params.folderId);
     if (folderId == null || Number.isNaN(folderId)) {

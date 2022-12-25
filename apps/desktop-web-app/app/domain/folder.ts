@@ -1,5 +1,5 @@
 import type { Collection } from './raindrop/collection';
-import type { User } from './user';
+import type { User } from './raindrop/user';
 
 export type Folder = {
   id: number;

@@ -1,6 +1,6 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useCallback } from 'react';
 import { getSupabaseForBrowser } from '~/libs/supabase/supabase-client';
 import { useSetCookieIfNeeded } from '~/shared/hooks/use-set-cookie-if-needed';
@@ -66,6 +66,13 @@ export default function Index() {
           </button>
         </div>
       </section>
+      <nav>
+        <ul>
+          <li>
+            <Link to={'/folders'}>/folders</Link>
+          </li>
+        </ul>
+      </nav>
     </main>
   );
 }

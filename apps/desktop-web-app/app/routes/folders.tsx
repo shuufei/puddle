@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderFunction } from '@remix-run/cloudflare';
+import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import {
   Outlet,
@@ -12,7 +12,7 @@ import { FolderPlus } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
-import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
+import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
 import type {
@@ -35,8 +35,8 @@ export type FoldersLoaderData = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
-    const [{ userId }, { accessToken }] = await Promise.all([
-      getRequestUserId(request),
+    const [{ id: userId }, { accessToken }] = await Promise.all([
+      getRequestUser(request),
       getRequestRaindropAccessToken(request),
     ]);
     const [foldersRes, collectionsRes] = await Promise.all([

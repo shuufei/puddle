@@ -1,6 +1,6 @@
 import type { ActionFunction } from '@remix-run/cloudflare';
 import type { Folder } from '~/domain/folder';
-import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
+import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { deleteFolder } from '~/features/folder/api/delete-folder.server';
 import { updateFolder } from '~/features/folder/api/update-folder.server';
 
@@ -11,7 +11,7 @@ export type UpdateFolderRequestBody = { method: 'PUT' } & {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const { userId } = await getRequestUserId(request);
+  const { id: userId } = await getRequestUser(request);
   const folderId = Number(params.folderId);
   if (folderId == null || Number.isNaN(folderId)) {
     return new Response(null, {

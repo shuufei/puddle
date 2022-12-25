@@ -1,6 +1,6 @@
 import type { ActionFunction } from '@remix-run/cloudflare';
 import type { Folder } from '~/domain/folder';
-import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
+import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { insertFolder } from '~/features/folder/api/insert-folder.server';
 
 export type CreateFolderRequestBody = Pick<
@@ -14,7 +14,7 @@ export type CreateFolderRequestBody = Pick<
 >;
 
 export const action: ActionFunction = async ({ request }) => {
-  const { userId } = await getRequestUserId(request);
+  const { id: userId } = await getRequestUser(request);
   const body = await request.json<CreateFolderRequestBody>();
   await insertFolder({
     ...body,
