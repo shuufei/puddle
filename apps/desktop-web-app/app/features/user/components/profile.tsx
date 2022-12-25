@@ -9,12 +9,14 @@ export const Profile: FC<{
   me: User;
 }> = ({ me }) => {
   const navigate = useNavigate();
+
   const signOut = useCallback(async () => {
     await fetch('/api/auth/sign-out', { method: 'POST' });
     navigate('/auth/sign-in');
   }, [navigate]);
+
   return (
-    <div className="flex gap-2 items-center justify-between p-2">
+    <div className="flex gap-4 items-center justify-between">
       <div className="flex gap-2 items-center">
         <img
           src={me.avaterUrl}
@@ -30,6 +32,7 @@ export const Profile: FC<{
         <Menu position="top-left">
           <div className="flex flex-col gap-1">
             <MenuContentItemButton label="サインアウト" onClick={signOut} />
+            <MenuContentItemButton label="Raindrop連携解除" />
             <MenuContentItemButton label="アカウントを削除" role={'danger'} />
           </div>
         </Menu>
