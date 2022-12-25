@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import { getSupabaseForBrowser } from '~/libs/supabase/supabase-client';
+import googleLogo from './g-logo.png';
 
 export const SignInWithGoogleButton: FC<{
   supabaseConfig: {
@@ -21,10 +22,12 @@ export const SignInWithGoogleButton: FC<{
   }, [endpoint, supabaseAnonKey, supabaseUrl]);
   return (
     <button
-      className="bg-green-600 px-3 py-2 rounded-sm text-white"
+      className="bg-white px-4 py-2 rounded flex items-center gap-2 border border-gray-300 hover:bg-gray-100 active:bg-gray-300 cursor-pointer"
+      style={{ cursor: 'pointer' }}
       onClick={signInWithGoogle}
     >
-      sign in with google
+      <img src={googleLogo} alt="" className="w-8 h-8" />
+      <span className="text-gray-900 font-semibold">Signin With Google</span>
     </button>
   );
 };

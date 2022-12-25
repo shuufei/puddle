@@ -48,7 +48,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     ]);
     const folders = foldersRes.data.data as Folder[];
     const collections = collectionsRes.collections;
-    const response: FoldersLoaderData = { folders, collections, me: user };
+    const response: FoldersLoaderData = {
+      folders,
+      collections,
+      me: user,
+    };
     return json(response);
   } catch (error) {
     return handleLoaderError(error);

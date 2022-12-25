@@ -26,8 +26,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 const UnauthorizedPage: FC = () => {
   const { env } = useLoaderData<LoaderData>();
   return (
-    <main>
-      <h1>Unauthorized</h1>
+    <main className="flex flex-col items-center p-8 gap-3">
+      <h1 className="text-lg font-semibold text-gray-900">Puddle</h1>
       <SignInWithGoogleButton supabaseConfig={env} />
     </main>
   );

@@ -2,7 +2,7 @@ import type { FC, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { MoreHorizontal } from 'react-feather';
 
-export type MenuPorps = { position?: 'left' | 'right' };
+export type MenuPorps = { position?: 'left' | 'right' | 'top-left' };
 
 export const Menu: FC<MenuPorps & { children: ReactNode }> = ({
   children,
@@ -49,7 +49,13 @@ export const Menu: FC<MenuPorps & { children: ReactNode }> = ({
       <div
         className={`p-2 z-10 absolute shadow-md bg-white whitespace-nowrap rounded ${
           isOpened ? 'visible' : 'hidden'
-        } ${position === 'left' ? 'right-0' : 'left-0'}`}
+        } ${
+          position === 'left'
+            ? 'right-0'
+            : position === 'right'
+            ? 'left-0'
+            : 'right-0 -top-1 -translate-y-full'
+        }`}
         ref={menuRef}
         onClick={(e) => {
           e.preventDefault();

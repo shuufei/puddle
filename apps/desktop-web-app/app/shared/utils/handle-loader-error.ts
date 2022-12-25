@@ -5,7 +5,7 @@ import { Unauthorized } from '~/errors/unauthorized';
 export const handleLoaderError = (error: unknown) => {
   if (error instanceof HttpError) {
     if (error instanceof Unauthorized) {
-      return redirect('/auth/unauthorized');
+      return redirect('/auth/sign-in');
     }
     throw new Response(
       JSON.stringify({
