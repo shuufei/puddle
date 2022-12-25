@@ -26,6 +26,7 @@ import { FolderListNavigation } from '~/features/folder/components/folder-list-n
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
 import { Profile } from '~/features/user/components/profile';
+import { Button } from '~/shared/components/button';
 import { Menu } from '~/shared/components/menu';
 import { MenuContentItemButton } from '~/shared/components/menu/menu-content-item-button';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
@@ -104,33 +105,51 @@ const FoldersLayout: FC = () => {
                   </Menu>
                 </div>
                 <div className="mt-2">
-                  <FolderListNavigation
-                    folders={rootFolders}
-                    onClickCreateMenu={(parentFolder) => {
-                      setCreateFolderDialogState({
-                        isOpen: true,
-                        parentFolder,
-                      });
-                    }}
-                    onClickDeleteMenu={(folder) => {
-                      const hasSubFolders =
-                        folders.find((v) => v.parent_folder_id === folder.id) !=
-                        null;
-                      setDeleteFolderDialogState({
-                        folder,
-                        hasSubFolders,
-                      });
-                    }}
-                    onClickEditMenu={(folder) => {
-                      const parentFolder = folders.find(
-                        (v) => v.id === folder.parent_folder_id
-                      );
-                      setEditFolderDialogState({
-                        folder,
-                        parentFolder,
-                      });
-                    }}
-                  />
+                  {rootFolders.length > 0 ? (
+                    <FolderListNavigation
+                      folders={rootFolders}
+                      onClickCreateMenu={(parentFolder) => {
+                        setCreateFolderDialogState({
+                          isOpen: true,
+                          parentFolder,
+                        });
+                      }}
+                      onClickDeleteMenu={(folder) => {
+                        const hasSubFolders =
+                          folders.find(
+                            (v) => v.parent_folder_id === folder.id
+                          ) != null;
+                        setDeleteFolderDialogState({
+                          folder,
+                          hasSubFolders,
+                        });
+                      }}
+                      onClickEditMenu={(folder) => {
+                        const parentFolder = folders.find(
+                          (v) => v.id === folder.parent_folder_id
+                        );
+                        setEditFolderDialogState({
+                          folder,
+                          parentFolder,
+                        });
+                      }}
+                    />
+                  ) : (
+                    <div className="flex justify-center">
+                      <Button
+                        onClick={() => {
+                          setCreateFolderDialogState({
+                            isOpen: true,
+                          });
+                        }}
+                      >
+                        <div className="flex gap-1 items-center">
+                          <FolderPlus size={'1.25rem'} />
+                          <span>フォルダを作成</span>
+                        </div>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
               <Profile me={me} />
