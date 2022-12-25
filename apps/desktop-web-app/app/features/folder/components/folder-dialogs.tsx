@@ -21,6 +21,7 @@ export type EditFolderDialogState = {
 export type DeleteFolderDialogState = {
   folder?: Folder;
   parentFolder?: Folder;
+  hasSubFolders?: boolean;
 };
 
 export const FolderDialogs: FC<{
@@ -66,6 +67,7 @@ export const FolderDialogs: FC<{
         <DeleteFolderModalDialog
           isOpen={true}
           folder={deleteFolderDialogState.folder}
+          hasSubFolders={deleteFolderDialogState.hasSubFolders}
           onClose={() => {
             onCloseDeleteFolderDialog();
             reloadData();

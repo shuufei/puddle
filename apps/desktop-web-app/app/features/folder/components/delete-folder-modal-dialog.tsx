@@ -10,8 +10,9 @@ import { FolderConditions } from './folder-conditions';
 export const DeleteFolderModalDialog: FC<{
   folder: Folder;
   isOpen: boolean;
+  hasSubFolders?: boolean;
   onClose: () => void;
-}> = ({ folder, isOpen, onClose }) => {
+}> = ({ folder, isOpen, hasSubFolders = false, onClose }) => {
   const [isDeleting, setDeleting] = useState(false);
 
   const deleteFolder = useCallback(async () => {
@@ -42,16 +43,30 @@ export const DeleteFolderModalDialog: FC<{
       }}
     >
       <div className="mt-4">
-        <span className="text-sm text-gray-600">
-          つぎのフォルダを削除します
-        </span>
-        <div className="flex flex-col gap-1 mt-2">
-          <p className="text-md font-semibold text-gray-900">{folder.title}</p>
-          <FolderConditions folder={folder} />
-        </div>
+        {!hasSubFolders ? (
+          <>
+            <span className="text-sm text-gray-600">
+              つぎのフォルダを削除します
+            </span>
+            <div className="flex flex-col gap-1 mt-2">
+              <p className="text-md font-semibold text-gray-900">
+                {folder.title}
+              </p>
+              <FolderConditions folder={folder} />
+            </div>
+          </>
+        ) : (
+          <span className="text-sm text-red-700">
+            フォルダを削除する前にサブフォルダを削除してください
+          </span>
+        )}
 
         <div className="flex gap-1.5 mt-8">
-          <Button role="danger" onClick={deleteFolder} disabled={isDeleting}>
+          <Button
+            role="danger"
+            onClick={deleteFolder}
+            disabled={isDeleting || hasSubFolders}
+          >
             {!isDeleting ? '削除' : '削除中...'}
           </Button>
           <Button

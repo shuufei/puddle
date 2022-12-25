@@ -33,12 +33,6 @@ export type FoldersLoaderData = {
   collections: Collection[];
 };
 
-export const action: ActionFunction = async ({ request }) => {
-  const body = await request.formData();
-  console.log('--- body: ', body);
-  return new Response(null, { status: 204 });
-};
-
 export const loader: LoaderFunction = async ({ request }) => {
   try {
     const [{ userId }, { accessToken }] = await Promise.all([
@@ -108,8 +102,12 @@ const FoldersLayout: FC = () => {
                     });
                   }}
                   onClickDeleteMenu={(folder) => {
+                    const hasSubFolders =
+                      folders.find((v) => v.parent_folder_id === folder.id) !=
+                      null;
                     setDeleteFolderDialogState({
                       folder,
+                      hasSubFolders,
                     });
                   }}
                   onClickEditMenu={(folder) => {

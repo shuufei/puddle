@@ -98,8 +98,11 @@ const FolderPage: FC = () => {
               });
             }}
             onClickDeleteMenu={() => {
+              const hasSubFolders =
+                folders.find((v) => v.parent_folder_id === folder.id) != null;
               setDeleteFolderDialogState({
                 folder,
+                hasSubFolders,
               });
             }}
             onClickEditMenu={() => {

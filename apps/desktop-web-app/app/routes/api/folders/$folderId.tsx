@@ -1,4 +1,4 @@
-import { ActionFunction } from '@remix-run/cloudflare';
+import type { ActionFunction } from '@remix-run/cloudflare';
 import type { Folder } from '~/domain/folder';
 import { getRequestUserId } from '~/features/auth/get-request-user-id.server';
 import { deleteFolder } from '~/features/folder/api/delete-folder.server';
