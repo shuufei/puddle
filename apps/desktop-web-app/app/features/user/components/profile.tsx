@@ -15,6 +15,11 @@ export const Profile: FC<{
     navigate('/auth/sign-in');
   }, [navigate]);
 
+  const liftRaindrop = useCallback(async () => {
+    await fetch('/api/raindrop/lift', { method: 'POST' });
+    navigate('/raindrop/integrate');
+  }, [navigate]);
+
   return (
     <div className="flex gap-4 items-center justify-between">
       <div className="flex gap-2 items-center">
@@ -32,7 +37,10 @@ export const Profile: FC<{
         <Menu position="top-left">
           <div className="flex flex-col gap-1">
             <MenuContentItemButton label="サインアウト" onClick={signOut} />
-            <MenuContentItemButton label="Raindrop連携解除" />
+            <MenuContentItemButton
+              label="Raindrop連携解除"
+              onClick={liftRaindrop}
+            />
             <MenuContentItemButton label="アカウントを削除" role={'danger'} />
           </div>
         </Menu>

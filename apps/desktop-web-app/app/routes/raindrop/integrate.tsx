@@ -7,7 +7,7 @@ import type { User } from '~/domain/user';
 import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { Profile } from '~/features/user/components/profile';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
-import raindropLogo from './raindrop.svg';
+import raindropLogo from '~/features/raindrop/raindrop.svg';
 
 type LoaderData = {
   me: User;
