@@ -33,7 +33,8 @@ export const SortItemsButton: FC<{
             setOpenSortPopup(true);
           }}
         >
-          <ArrowDown size={'1rem'} /> {SORT_KEY[sortKey]}
+          <ArrowDown size={'0.8rem'} />
+          {SORT_KEY[sortKey]}
         </button>
       }
     >

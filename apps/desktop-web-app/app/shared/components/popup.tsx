@@ -38,7 +38,7 @@ export const Popup: FC<PopupPorps & { children: ReactNode }> = ({
   }, [isOpen, onClose]);
 
   return (
-    <div className="relative">
+    <div className="relative leading-none">
       <div ref={menuButtonRef} className={'inline-block'}>
         {triggerButton}
       </div>
