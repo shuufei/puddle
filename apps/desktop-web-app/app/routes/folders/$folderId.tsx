@@ -1,6 +1,11 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
-import { useCatch, useLoaderData, useNavigate } from '@remix-run/react';
+import {
+  useCatch,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react';
 import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules';
 import type { FC } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -107,6 +112,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 const FolderPage: FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const defaultSortKey =
+    (searchParams.get('sort') as SortKey) ?? DEFAULT_SORT_KEY;
+  const defaultGroupKey =
+    (searchParams.get('group') as GroupKey) ?? DEFAULT_GROUP_KEY;
+
   const { folder, items } = useLoaderData<LoaderData>();
   // const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
   const [createFolderDialogState, setCreateFolderDialogState] =
@@ -116,8 +127,9 @@ const FolderPage: FC = () => {
   const [editFolderDialogState, setEditFolderDialogState] =
     useState<EditFolderDialogState>({});
   const { folders } = useContext(FoldersStateContext);
-  const [sortKey, setSortKey] = useState<SortKey>(DEFAULT_SORT_KEY);
-  const [groupKey, setGroupKey] = useState<GroupKey>(DEFAULT_GROUP_KEY);
+
+  const [sortKey, setSortKey] = useState<SortKey>(defaultSortKey);
+  const [groupKey, setGroupKey] = useState<GroupKey>(defaultGroupKey);
 
   const enableSort = useMemo(() => {
     return groupKey === 'none';
@@ -125,6 +137,13 @@ const FolderPage: FC = () => {
   const sortedItems = useMemo(() => {
     return sortItems(items, sortKey);
   }, [items, sortKey]);
+
+  useEffect(() => {
+    setSearchParams({
+      sort: sortKey,
+      group: groupKey,
+    });
+  }, [groupKey, setSearchParams, sortKey]);
 
   return (
     <>
@@ -169,12 +188,12 @@ const FolderPage: FC = () => {
           <div className="mt-3 flex items-center gap-1.5">
             <GroupItemsButton
               groupKey={groupKey}
-              defaultGroupKey={DEFAULT_GROUP_KEY}
+              defaultGroupKey={defaultGroupKey}
               onChange={(key) => setGroupKey(key)}
             />
             <SortItemsButton
               sortKey={sortKey}
-              defaultSortKey={DEFAULT_SORT_KEY}
+              defaultSortKey={defaultSortKey}
               disabled={!enableSort}
               onChange={(key) => setSortKey(key)}
             />
