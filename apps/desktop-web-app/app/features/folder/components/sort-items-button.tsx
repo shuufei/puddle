@@ -17,8 +17,9 @@ export type SortKey = keyof typeof SORT_KEY;
 export const SortItemsButton: FC<{
   sortKey: SortKey;
   defaultSortKey: SortKey;
+  disabled?: boolean;
   onChange: (key: SortKey) => void;
-}> = ({ sortKey, defaultSortKey, onChange }) => {
+}> = ({ sortKey, defaultSortKey, disabled = false, onChange }) => {
   const [isOpenSortPopup, setOpenSortPopup] = useState(false);
   return (
     <Popup
@@ -28,13 +29,14 @@ export const SortItemsButton: FC<{
       }}
       triggerButton={
         <button
-          className="text-xs text-gray-900 bg-white hover:bg-gray-100 active:bg-gray-300 rounded px-1.5 py-0.5 border border-gray-300 flex items-center gap-1"
+          className="text-xs text-gray-900 bg-white hover:bg-gray-100 active:bg-gray-300 rounded px-1.5 py-0.5 border border-gray-300 flex items-center gap-1 disabled:bg-gray-200 disabled:text-gray-400"
+          disabled={disabled}
           onClick={() => {
             setOpenSortPopup(true);
           }}
         >
           <ArrowDown size={'0.8rem'} />
-          {SORT_KEY[sortKey]}
+          {!disabled ? SORT_KEY[sortKey] : '並び替えを指定できません'}
         </button>
       }
     >

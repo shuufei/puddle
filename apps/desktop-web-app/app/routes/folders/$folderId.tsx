@@ -119,6 +119,9 @@ const FolderPage: FC = () => {
   const [sortKey, setSortKey] = useState<SortKey>(DEFAULT_SORT_KEY);
   const [groupKey, setGroupKey] = useState<GroupKey>(DEFAULT_GROUP_KEY);
 
+  const enableSort = useMemo(() => {
+    return groupKey === 'none';
+  }, [groupKey]);
   const sortedItems = useMemo(() => {
     return sortItems(items, sortKey);
   }, [items, sortKey]);
@@ -172,6 +175,7 @@ const FolderPage: FC = () => {
             <SortItemsButton
               sortKey={sortKey}
               defaultSortKey={DEFAULT_SORT_KEY}
+              disabled={!enableSort}
               onChange={(key) => setSortKey(key)}
             />
           </div>
