@@ -3,8 +3,7 @@ import { json } from '@remix-run/cloudflare';
 import { useCatch, useLoaderData, useNavigate } from '@remix-run/react';
 import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules';
 import type { FC } from 'react';
-import { useMemo } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 // import { useState } from 'react';
 import type { Folder } from '~/domain/folder';
 import type { Item } from '~/domain/raindrop/item';
@@ -24,7 +23,10 @@ import type {
 import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
 // import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { FolderMenu } from '~/features/folder/components/folder-menu';
-import { RaindropListItem } from '~/features/folder/components/raindrop-list-item';
+import type { GroupKey } from '~/features/folder/components/group-items-button';
+import { GroupItemsButton } from '~/features/folder/components/group-items-button';
+import { RaindropList } from '~/features/folder/components/raindrop-list';
+import { RaindropListGroupByTag } from '~/features/folder/components/raindrop-list-group-by-tag';
 import type { SortKey } from '~/features/folder/components/sort-items-button';
 import { SortItemsButton } from '~/features/folder/components/sort-items-button';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
@@ -38,6 +40,7 @@ type LoaderData = {
 };
 
 const DEFAULT_SORT_KEY: SortKey = 'createdDesc';
+const DEFAULT_GROUP_KEY: GroupKey = 'none';
 
 const sortItems = (items: Item[], sortKey: SortKey): Item[] => {
   switch (sortKey) {
@@ -114,6 +117,7 @@ const FolderPage: FC = () => {
     useState<EditFolderDialogState>({});
   const { folders } = useContext(FoldersStateContext);
   const [sortKey, setSortKey] = useState<SortKey>(DEFAULT_SORT_KEY);
+  const [groupKey, setGroupKey] = useState<GroupKey>(DEFAULT_GROUP_KEY);
 
   const sortedItems = useMemo(() => {
     return sortItems(items, sortKey);
@@ -159,7 +163,12 @@ const FolderPage: FC = () => {
               }}
             />
           </div>
-          <div className="mt-3">
+          <div className="mt-3 flex items-center gap-1.5">
+            <GroupItemsButton
+              groupKey={groupKey}
+              defaultGroupKey={DEFAULT_GROUP_KEY}
+              onChange={(key) => setGroupKey(key)}
+            />
             <SortItemsButton
               sortKey={sortKey}
               defaultSortKey={DEFAULT_SORT_KEY}
@@ -167,16 +176,13 @@ const FolderPage: FC = () => {
             />
           </div>
         </header>
-        <ul className="mt-4 px-1 pb-8">
-          {sortedItems.map((item) => {
-            return (
-              <li key={item._id} className="mb-3">
-                <RaindropListItem raindropItem={item} />
-              </li>
-            );
-          })}
-        </ul>
-        {items.length === 0 && (
+        <div className="mt-4 px-1">
+          {groupKey === 'none' && <RaindropList items={sortedItems} />}
+          {groupKey === 'subTag' && (
+            <RaindropListGroupByTag items={items} folder={folder} />
+          )}
+        </div>
+        {sortedItems.length === 0 && (
           <p className=" text-sm text-gray-600 text-center">
             アイテムがありません
           </p>
