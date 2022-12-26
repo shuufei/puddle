@@ -94,7 +94,7 @@ const FoldersLayout: FC = () => {
       <FoldersStateContext.Provider value={{ folders }}>
         <div className="flex justify-center px-4">
           <div className="flex gap-6 w-full max-w-10xl">
-            <nav className="p-4 w-96 h-screen flex flex-col justify-between gap-2 sticky top-0">
+            <nav className="p-4 sm:w-64 md:w-72 lg:w-80 xl:w-96 h-screen flex flex-col justify-between gap-2 sticky top-0">
               <div className="flex-1 overflow-y-scroll">
                 <div className="flex items-center px-3 justify-end">
                   <Menu position={'left'}>
@@ -159,7 +159,7 @@ const FoldersLayout: FC = () => {
               <Profile me={me} />
             </nav>
             {transitioin.state === 'loading' && (
-              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-100 drop-shadow-md rounded border border-gray-100">
+              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-100 drop-shadow-md rounded border border-gray-100 z-50">
                 <span className="text-xs font-semibold text-gray-900">
                   読み込み中...
                 </span>
@@ -168,7 +168,7 @@ const FoldersLayout: FC = () => {
             <main className="flex-1">
               <Outlet />
             </main>
-            <div className="sm:w-7 lg:w-20"></div>
+            <div className="sm:w-0 lg:w-12 xl:w-20"></div>
           </div>
         </div>
         <FolderDialogs
