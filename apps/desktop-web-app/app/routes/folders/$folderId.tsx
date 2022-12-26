@@ -26,7 +26,7 @@ import { FolderMenu } from '~/features/folder/components/folder-menu';
 import type { GroupKey } from '~/features/folder/components/group-items-button';
 import { GroupItemsButton } from '~/features/folder/components/group-items-button';
 import { RaindropList } from '~/features/folder/components/raindrop-list';
-import { RaindropListGroupByTag } from '~/features/folder/components/raindrop-list-group-by-tag';
+import { GroupedRaindropList } from '~/features/folder/components/grouped-raindrop-list';
 import type { SortKey } from '~/features/folder/components/sort-items-button';
 import { SortItemsButton } from '~/features/folder/components/sort-items-button';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
@@ -129,7 +129,7 @@ const FolderPage: FC = () => {
   return (
     <>
       <div className="">
-        <header className="sticky top-0 bg-white px-2 pt-3 pb-1.5 border-b-2 border-gray-900">
+        <header className="sticky top-0 bg-white px-2 pt-3 pb-2 border-b-2 border-gray-900">
           <div className="flex justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -180,10 +180,14 @@ const FolderPage: FC = () => {
             />
           </div>
         </header>
-        <div className="mt-4 px-1">
+        <div className="mt-4 px-1 pb-8">
           {groupKey === 'none' && <RaindropList items={sortedItems} />}
-          {groupKey === 'subTag' && (
-            <RaindropListGroupByTag items={items} folder={folder} />
+          {groupKey !== 'none' && (
+            <GroupedRaindropList
+              items={items}
+              folder={folder}
+              groupKey={groupKey}
+            />
           )}
         </div>
         {sortedItems.length === 0 && (
