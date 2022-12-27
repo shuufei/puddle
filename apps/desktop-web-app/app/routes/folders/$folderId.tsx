@@ -148,7 +148,7 @@ const FolderPage: FC = () => {
   return (
     <>
       <div className="">
-        <header className="sticky top-0 bg-white px-2 pt-3 pb-2 border-b-2 border-gray-900">
+        <header className="sticky top-0 bg-white px-2 pt-3 pb-2 border-b-2 border-gray-900 z-30">
           <div className="flex justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">

@@ -7,7 +7,8 @@ import { MenuContentItemButton } from '~/shared/components/menu/menu-content-ite
 
 export const Profile: FC<{
   me: User;
-}> = ({ me }) => {
+  onOpenDeleteUserDialog: () => void;
+}> = ({ me, onOpenDeleteUserDialog }) => {
   const navigate = useNavigate();
 
   const signOut = useCallback(async () => {
@@ -18,11 +19,6 @@ export const Profile: FC<{
   const liftRaindrop = useCallback(async () => {
     await fetch('/api/raindrop/lift', { method: 'POST' });
     navigate('/raindrop/integrate');
-  }, [navigate]);
-
-  const deleteUser = useCallback(async () => {
-    await fetch('/api/users/delete', { method: 'POST' });
-    navigate('/');
   }, [navigate]);
 
   return (
@@ -49,7 +45,9 @@ export const Profile: FC<{
             <MenuContentItemButton
               label="アカウントを削除"
               role={'danger'}
-              onClick={deleteUser}
+              onClick={() => {
+                onOpenDeleteUserDialog();
+              }}
             />
           </div>
         </Menu>

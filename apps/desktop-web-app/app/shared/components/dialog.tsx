@@ -149,10 +149,10 @@ export const Dialog: FC<{
     <>
       <div
         tabIndex={-1}
-        className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-60"
+        className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-60 z-40"
       ></div>
       <div
-        className="fixed flex justify-center items-start w-full h-screen top-0 left-0 overflow-auto overscroll-y-auto"
+        className="fixed flex justify-center items-start w-full h-screen top-0 left-0 overflow-auto overscroll-y-auto z-50"
         onClick={() => {
           onClose();
         }}

@@ -28,6 +28,7 @@ import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
 import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { CollectionsStateContext } from '~/features/folder/states/collections-state-context';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
+import { DeleteUserModalDialog } from '~/features/user/components/delete-user-modal-dialog';
 import { Profile } from '~/features/user/components/profile';
 import { Button } from '~/shared/components/button';
 import { Menu } from '~/shared/components/menu';
@@ -87,6 +88,7 @@ const FoldersLayout: FC = () => {
     useState<DeleteFolderDialogState>({});
   const [editFolderDialogState, setEditFolderDialogState] =
     useState<EditFolderDialogState>({});
+  const [isOpenDeleteUserDialog, setOpenDeleteUserDialog] = useState(false);
   const transitioin = useTransition();
 
   const folders = useMemo(() => {
@@ -106,7 +108,8 @@ const FoldersLayout: FC = () => {
           <div className="flex gap-6 w-full max-w-10xl">
             <nav className="p-4 sm:w-64 md:w-72 lg:w-80 xl:w-96 h-screen flex flex-col justify-between gap-2 sticky top-0">
               <div className="flex-1 overflow-y-scroll">
-                <div className="flex items-center px-3 justify-end">
+                <div className="flex items-center px-3 justify-between">
+                  <p className="text-lg font-semibold text-gray-900">Puddle</p>
                   <Menu position={'left'}>
                     <MenuContentItemButton
                       label="フォルダを追加"
@@ -118,7 +121,7 @@ const FoldersLayout: FC = () => {
                     />
                   </Menu>
                 </div>
-                <div className="mt-2">
+                <div className="mt-4">
                   {rootFolders.length > 0 ? (
                     <FolderListNavigation
                       folders={rootFolders}
@@ -166,10 +169,15 @@ const FoldersLayout: FC = () => {
                   )}
                 </div>
               </div>
-              <Profile me={me} />
+              <Profile
+                me={me}
+                onOpenDeleteUserDialog={() => {
+                  setOpenDeleteUserDialog(true);
+                }}
+              />
             </nav>
             {transitioin.state === 'loading' && (
-              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-100 drop-shadow-md rounded border border-gray-100 z-50">
+              <div className="fixed top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-100 drop-shadow-md rounded border border-gray-100 z-40">
                 <span className="text-xs font-semibold text-gray-900">
                   読み込み中...
                 </span>
@@ -193,6 +201,12 @@ const FoldersLayout: FC = () => {
           }}
           onCloseDeleteFolderDialog={() => {
             setDeleteFolderDialogState({});
+          }}
+        />
+        <DeleteUserModalDialog
+          isOpen={isOpenDeleteUserDialog}
+          onClose={() => {
+            setOpenDeleteUserDialog(false);
           }}
         />
       </FoldersStateContext.Provider>
