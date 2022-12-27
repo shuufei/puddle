@@ -20,6 +20,11 @@ export const Profile: FC<{
     navigate('/raindrop/integrate');
   }, [navigate]);
 
+  const deleteUser = useCallback(async () => {
+    await fetch('/api/users/delete', { method: 'POST' });
+    navigate('/');
+  }, [navigate]);
+
   return (
     <div className="flex gap-4 items-center justify-between">
       <div className="flex gap-2 items-center">
@@ -41,7 +46,11 @@ export const Profile: FC<{
               label="Raindrop連携解除"
               onClick={liftRaindrop}
             />
-            <MenuContentItemButton label="アカウントを削除" role={'danger'} />
+            <MenuContentItemButton
+              label="アカウントを削除"
+              role={'danger'}
+              onClick={deleteUser}
+            />
           </div>
         </Menu>
       </div>
