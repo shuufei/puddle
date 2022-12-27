@@ -9,7 +9,6 @@ import {
 import type { CatchBoundaryComponent } from '@remix-run/react/dist/routeModules';
 import type { FC } from 'react';
 import { useContext, useEffect, useMemo, useState } from 'react';
-// import { useState } from 'react';
 import type { Folder } from '~/domain/folder';
 import type { Item } from '~/domain/raindrop/item';
 import { NotFound } from '~/errors/not-found';
@@ -17,8 +16,6 @@ import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raind
 import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { getFolderById } from '~/features/folder/api/get-folder-by-id.server';
 import { getFolderItems } from '~/features/folder/api/get-items.server';
-// import { getSubFoldersByParentId } from '~/features/folder/api/get-subfolders-by-parent-id.server';
-// import { CreateFolderButton } from '~/features/folder/components/create-folder-button';
 import { FolderConditions } from '~/features/folder/components/folder-conditions';
 import type {
   CreateFolderDialogState,
@@ -26,7 +23,6 @@ import type {
   EditFolderDialogState,
 } from '~/features/folder/components/folder-dialogs';
 import { FolderDialogs } from '~/features/folder/components/folder-dialogs';
-// import { FolderListNavigation } from '~/features/folder/components/folder-list-navigation';
 import { FolderMenu } from '~/features/folder/components/folder-menu';
 import type { GroupKey } from '~/features/folder/components/group-items-button';
 import { GroupItemsButton } from '~/features/folder/components/group-items-button';
@@ -35,13 +31,11 @@ import { GroupedRaindropList } from '~/features/folder/components/grouped-raindr
 import type { SortKey } from '~/features/folder/components/sort-items-button';
 import { SortItemsButton } from '~/features/folder/components/sort-items-button';
 import { FoldersStateContext } from '~/features/folder/states/folders-state-context';
-// import { Tab } from '~/shared/components/tabs/tab';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 
 type LoaderData = {
   folder: Folder;
   items: Item[];
-  // subFolders: Folder[];
 };
 
 const DEFAULT_SORT_KEY: SortKey = 'createdDesc';
@@ -85,24 +79,18 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     if (folderId == null || Number.isNaN(folderId)) {
       throw new NotFound();
     }
-    const [
-      folderRes,
-      itemsRes,
-      // subFoldersRes
-    ] = await Promise.all([
+    const [folderRes, itemsRes] = await Promise.all([
       getFolderById(folderId, userId),
       getFolderItems(folderId, {
         userId,
         raindropAccessToken: accessToken,
       }),
-      // getSubFoldersByParentId(folderId, userId),
     ]);
     if (folderRes.data.data?.[0] == null) {
       throw new NotFound();
     }
     const response: LoaderData = {
       items: itemsRes.items,
-      // subFolders: subFoldersRes.data.data as Folder[],
       folder: folderRes.data.data[0] as Folder,
     };
     return json(response);
@@ -119,7 +107,6 @@ const FolderPage: FC = () => {
     (searchParams.get('group') as GroupKey) ?? DEFAULT_GROUP_KEY;
 
   const { folder, items } = useLoaderData<LoaderData>();
-  // const [activeTab, setActiveTab] = useState<'items' | 'subfodlers'>('items');
   const [createFolderDialogState, setCreateFolderDialogState] =
     useState<CreateFolderDialogState>({ isOpen: false });
   const [deleteFolderDialogState, setDeleteFolderDialogState] =
@@ -214,47 +201,6 @@ const FolderPage: FC = () => {
             アイテムがありません
           </p>
         )}
-        {/* <div className="mt-6 flex gap-1 px-4">
-        <Tab
-          label="items"
-          isActive={activeTab === 'items'}
-          onClick={() => {
-            setActiveTab('items');
-          }}
-        />
-        <Tab
-          label="sub folders"
-          isActive={activeTab === 'subfodlers'}
-          onClick={() => {
-            setActiveTab('subfodlers');
-          }}
-        />
-      </div>
-      <hr className="border-gray-900 border-2 border-b-0" />
-      <div hidden={activeTab !== 'items'} className={'p-2 pt-4'}>
-        <ul>
-          {items.map((item) => {
-            return (
-              <li key={item._id} className="mb-3">
-                <RaindropListItem raindropItem={item} />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      <div hidden={activeTab !== 'subfodlers'} className={'p-2 pt-4'}>
-        {subFolders.length != 0 ? (
-          <FolderListNavigation
-            folders={subFolders}
-            onClickCreateMenu={() => {}}
-          />
-        ) : (
-          <div className="flex flex-col items-start gap-4">
-            <span className="text-sm text-gray-500">No folders</span>
-            <CreateFolderButton />
-          </div>
-        )}
-      </div> */}
       </div>
       <FolderDialogs
         createFolderDialogState={createFolderDialogState}
