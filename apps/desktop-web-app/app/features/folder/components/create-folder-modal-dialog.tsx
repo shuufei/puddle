@@ -43,6 +43,15 @@ export const CreateFolderModalDialog: FC<{
   const [match, setMatch] = useState<Match>('and');
   const [isCreating, setCreating] = useState(false);
 
+  const closeDialog = useCallback(() => {
+    onClose();
+    titleValueRef.current = '';
+    tagValueRef.current = '';
+    setCollectionId(ALL_COLLECTION_VALUE);
+    setIncludeImportant(false);
+    setMatch('and');
+  }, [onClose]);
+
   const createFolder = useCallback(async () => {
     setCreating(true);
     const tags =
@@ -70,9 +79,9 @@ export const CreateFolderModalDialog: FC<{
       body: JSON.stringify(body),
     });
     console.log(res.status);
-    onClose();
+    closeDialog();
     setCreating(false);
-  }, [collectionId, includeImportant, match, onClose, parentFolder?.id]);
+  }, [closeDialog, collectionId, includeImportant, match, parentFolder?.id]);
 
   return (
     <Dialog
@@ -80,7 +89,7 @@ export const CreateFolderModalDialog: FC<{
       title={'新規フォルダを作成'}
       titleIcon={<FolderIcon size={'1.25rem'} />}
       onClose={() => {
-        onClose();
+        closeDialog();
       }}
     >
       {parentFolder && (
@@ -140,7 +149,7 @@ export const CreateFolderModalDialog: FC<{
           <Button
             variant="ghost"
             onClick={() => {
-              onClose();
+              closeDialog();
             }}
           >
             キャンセル
