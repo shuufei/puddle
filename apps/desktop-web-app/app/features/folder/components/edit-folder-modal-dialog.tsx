@@ -47,9 +47,9 @@ export const EditFolderModalDialog: FC<{
   const [includeImportant, setIncludeImportant] = useState(
     folder.include_important
   );
-  const [match, setMatch] = useState<Match>(
-    folder.tags_or_search ? MATCH.or : MATCH.and
-  );
+  // const [match, setMatch] = useState<Match>(
+  //   folder.tags_or_search ? MATCH.or : MATCH.and
+  // );
   const [isUpdating, setUpdating] = useState(false);
 
   const editFolder = useCallback(async () => {
@@ -72,7 +72,8 @@ export const EditFolderModalDialog: FC<{
           : undefined, // TODO: validate number
       tags: tags,
       include_important: includeImportant,
-      tags_or_search: match === 'or',
+      // tags_or_search: match === 'or',
+      tags_or_search: false,
     };
     const body: UpdateFolderRequestBody = {
       method: 'PUT',
@@ -85,7 +86,7 @@ export const EditFolderModalDialog: FC<{
     console.log(res.status);
     onClose();
     setUpdating(false);
-  }, [collectionId, folder, includeImportant, match, onClose]);
+  }, [collectionId, folder, includeImportant, onClose]);
 
   return (
     <Dialog
@@ -139,7 +140,7 @@ export const EditFolderModalDialog: FC<{
             >
               <ImportantIcon size="1rem" />
             </Checkbox>
-            <RadioGroup
+            {/* <RadioGroup
               label="一致"
               defaultValue={folder.tags_or_search ? MATCH.or : MATCH.and}
               onChange={(value) => {
@@ -150,7 +151,7 @@ export const EditFolderModalDialog: FC<{
                 <Radio value={MATCH.and}>AND</Radio>
                 <Radio value={MATCH.or}>OR</Radio>
               </div>
-            </RadioGroup>
+            </RadioGroup> */}
           </div>
         </section>
         <div className="flex gap-1.5 mt-8">

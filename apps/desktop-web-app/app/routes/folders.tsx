@@ -109,7 +109,7 @@ const FoldersLayout: FC = () => {
             <nav className="p-4 sm:w-64 md:w-72 lg:w-80 xl:w-96 h-screen flex flex-col justify-between gap-2 sticky top-0">
               <div className="flex-1 overflow-y-scroll">
                 <div className="flex items-center px-3 justify-between">
-                  <p className="text-lg font-semibold text-gray-900">Puddle</p>
+                  <p className="text-sm font-semibold text-gray-900">Puddle</p>
                   <Menu position={'left'}>
                     <MenuContentItemButton
                       label="フォルダを追加"

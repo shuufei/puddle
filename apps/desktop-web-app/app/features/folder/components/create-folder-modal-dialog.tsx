@@ -40,7 +40,7 @@ export const CreateFolderModalDialog: FC<{
   const [collectionId, setCollectionId] =
     useState<string>(ALL_COLLECTION_VALUE);
   const [includeImportant, setIncludeImportant] = useState(false);
-  const [match, setMatch] = useState<Match>('and');
+  // const [match, setMatch] = useState<Match>('and');
   const [isCreating, setCreating] = useState(false);
 
   const closeDialog = useCallback(() => {
@@ -49,7 +49,7 @@ export const CreateFolderModalDialog: FC<{
     tagValueRef.current = '';
     setCollectionId(ALL_COLLECTION_VALUE);
     setIncludeImportant(false);
-    setMatch('and');
+    // setMatch('and');
   }, [onClose]);
 
   const createFolder = useCallback(async () => {
@@ -71,7 +71,8 @@ export const CreateFolderModalDialog: FC<{
           : undefined, // TODO: validate number
       tags: tags,
       include_important: includeImportant,
-      tags_or_search: match === 'or',
+      // tags_or_search: match === 'or',
+      tags_or_search: false,
       parent_folder_id: parentFolder?.id,
     };
     const res = await fetch(`${endpoint}/api/folders`, {
@@ -81,7 +82,7 @@ export const CreateFolderModalDialog: FC<{
     console.log(res.status);
     closeDialog();
     setCreating(false);
-  }, [closeDialog, collectionId, includeImportant, match, parentFolder?.id]);
+  }, [closeDialog, collectionId, includeImportant, parentFolder?.id]);
 
   return (
     <Dialog
@@ -128,7 +129,7 @@ export const CreateFolderModalDialog: FC<{
             <Checkbox label="include important" onChange={setIncludeImportant}>
               <ImportantIcon size="1rem" />
             </Checkbox>
-            <RadioGroup
+            {/* <RadioGroup
               label="一致"
               defaultValue="and"
               onChange={(value) => {
@@ -139,7 +140,7 @@ export const CreateFolderModalDialog: FC<{
                 <Radio value={MATCH.and}>AND</Radio>
                 <Radio value={MATCH.or}>OR</Radio>
               </div>
-            </RadioGroup>
+            </RadioGroup> */}
           </div>
         </section>
         <div className="flex gap-1.5 mt-8">
