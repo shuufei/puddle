@@ -1,6 +1,5 @@
 import type { FC } from 'react';
-import { useCallback, useRef } from 'react';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
@@ -9,13 +8,10 @@ import { Button } from '~/shared/components/button';
 import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
 import { ImportantIcon } from '~/shared/components/important-icon';
-import { Radio } from '~/shared/components/radio/radio';
-import { RadioGroup } from '~/shared/components/radio/radio-group';
 import type { SelectOption } from '~/shared/components/select-box';
 import { SelectBox } from '~/shared/components/select-box';
 import { TextField } from '~/shared/components/text-field';
-import type { Match } from './folder-form-def';
-import { ALL_COLLECTION_VALUE, MATCH } from './folder-form-def';
+import { ALL_COLLECTION_VALUE } from './folder-form-def';
 
 export const CreateFolderModalDialog: FC<{
   collections: Collection[];
@@ -40,7 +36,6 @@ export const CreateFolderModalDialog: FC<{
   const [collectionId, setCollectionId] =
     useState<string>(ALL_COLLECTION_VALUE);
   const [includeImportant, setIncludeImportant] = useState(false);
-  // const [match, setMatch] = useState<Match>('and');
   const [isCreating, setCreating] = useState(false);
 
   const closeDialog = useCallback(() => {
@@ -49,7 +44,6 @@ export const CreateFolderModalDialog: FC<{
     tagValueRef.current = '';
     setCollectionId(ALL_COLLECTION_VALUE);
     setIncludeImportant(false);
-    // setMatch('and');
   }, [onClose]);
 
   const createFolder = useCallback(async () => {
@@ -71,7 +65,6 @@ export const CreateFolderModalDialog: FC<{
           : undefined, // TODO: validate number
       tags: tags,
       include_important: includeImportant,
-      // tags_or_search: match === 'or',
       tags_or_search: false,
       parent_folder_id: parentFolder?.id,
     };
@@ -129,18 +122,6 @@ export const CreateFolderModalDialog: FC<{
             <Checkbox label="include important" onChange={setIncludeImportant}>
               <ImportantIcon size="1rem" />
             </Checkbox>
-            {/* <RadioGroup
-              label="一致"
-              defaultValue="and"
-              onChange={(value) => {
-                setMatch(value as Match);
-              }}
-            >
-              <div className="flex gap-4">
-                <Radio value={MATCH.and}>AND</Radio>
-                <Radio value={MATCH.or}>OR</Radio>
-              </div>
-            </RadioGroup> */}
           </div>
         </section>
         <div className="flex gap-1.5 mt-8">

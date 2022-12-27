@@ -8,13 +8,10 @@ import { Button } from '~/shared/components/button';
 import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
 import { ImportantIcon } from '~/shared/components/important-icon';
-import { Radio } from '~/shared/components/radio/radio';
-import { RadioGroup } from '~/shared/components/radio/radio-group';
 import type { SelectOption } from '~/shared/components/select-box';
 import { SelectBox } from '~/shared/components/select-box';
 import { TextField } from '~/shared/components/text-field';
-import type { Match } from './folder-form-def';
-import { ALL_COLLECTION_VALUE, MATCH } from './folder-form-def';
+import { ALL_COLLECTION_VALUE } from './folder-form-def';
 
 export const EditFolderModalDialog: FC<{
   collections: Collection[];
@@ -47,9 +44,6 @@ export const EditFolderModalDialog: FC<{
   const [includeImportant, setIncludeImportant] = useState(
     folder.include_important
   );
-  // const [match, setMatch] = useState<Match>(
-  //   folder.tags_or_search ? MATCH.or : MATCH.and
-  // );
   const [isUpdating, setUpdating] = useState(false);
 
   const editFolder = useCallback(async () => {
@@ -72,7 +66,6 @@ export const EditFolderModalDialog: FC<{
           : undefined, // TODO: validate number
       tags: tags,
       include_important: includeImportant,
-      // tags_or_search: match === 'or',
       tags_or_search: false,
     };
     const body: UpdateFolderRequestBody = {
@@ -140,18 +133,6 @@ export const EditFolderModalDialog: FC<{
             >
               <ImportantIcon size="1rem" />
             </Checkbox>
-            {/* <RadioGroup
-              label="一致"
-              defaultValue={folder.tags_or_search ? MATCH.or : MATCH.and}
-              onChange={(value) => {
-                setMatch(value as Match);
-              }}
-            >
-              <div className="flex gap-4">
-                <Radio value={MATCH.and}>AND</Radio>
-                <Radio value={MATCH.or}>OR</Radio>
-              </div>
-            </RadioGroup> */}
           </div>
         </section>
         <div className="flex gap-1.5 mt-8">
