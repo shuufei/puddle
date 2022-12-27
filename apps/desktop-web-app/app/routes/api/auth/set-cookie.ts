@@ -36,7 +36,11 @@ export const action: ActionFunction = async ({ request }) => {
   );
 
   const headers = new Headers();
-  const options = { expires: new Date(Date.now() + Number(expires) * 1000) };
+  const sevenDaysMilliSec = 60 * 60 * 1000 * 24 * 7;
+  const options = {
+    // NOTE: refresh tokenの失効期限をexpiresとする(7日)。access tokenが失効したらrefreshさせる
+    expires: new Date(Date.now() + Number(expires) * 1000 + sevenDaysMilliSec),
+  };
 
   headers.append(
     'Set-Cookie',

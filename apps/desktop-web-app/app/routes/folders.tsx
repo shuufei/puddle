@@ -1,6 +1,5 @@
 import type { LoaderFunction } from '@remix-run/cloudflare';
-import { redirect } from '@remix-run/cloudflare';
-import { json } from '@remix-run/cloudflare';
+import { json, redirect } from '@remix-run/cloudflare';
 import {
   Outlet,
   useFetcher,
@@ -13,8 +12,11 @@ import { FolderPlus } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import type { User } from '~/domain/user';
+import { ExpiredAccessToken } from '~/errors/expired-access-token';
+import { refreshTokenCookie } from '~/features/auth/cookies';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
 import { getRequestUser } from '~/features/auth/get-request-user.server';
+import { refreshAccessToken } from '~/features/auth/refresh.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
 import type {
@@ -60,6 +62,14 @@ export const loader: LoaderFunction = async ({ request }) => {
     };
     return json(response);
   } catch (error) {
+    if (error instanceof ExpiredAccessToken) {
+      const refreshToken = await refreshTokenCookie.parse(
+        request.headers.get('Cookie')
+      );
+      const { headers } = await refreshAccessToken(refreshToken);
+      const referer = request.headers.get('referer');
+      return redirect(referer ?? '/folders', { headers });
+    }
     return handleLoaderError(error);
   }
 };

@@ -1,4 +1,5 @@
 import { redirect } from '@remix-run/cloudflare';
+import { ExpiredAccessToken } from '~/errors/expired-access-token';
 import { HttpError } from '~/errors/http-error';
 import { NotIntegrateRaindrop } from '~/errors/not-integrate-raindrop';
 import { Unauthorized } from '~/errors/unauthorized';
@@ -17,6 +18,8 @@ export const handleLoaderError = (error: unknown) => {
     );
   } else if (error instanceof NotIntegrateRaindrop) {
     return redirect('/raindrop/integrate');
+  } else if (error instanceof ExpiredAccessToken) {
+    return redirect('/folders');
   } else {
     throw new Response(JSON.stringify({}), {
       status: 500,
