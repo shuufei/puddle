@@ -2,12 +2,14 @@ import type { LoaderFunction } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
 import type { FC } from 'react';
+import { useState } from 'react';
 import { useCallback } from 'react';
 import type { User } from '~/domain/user';
 import { getRequestUser } from '~/features/auth/get-request-user.server';
 import { Profile } from '~/features/user/components/profile';
 import { handleLoaderError } from '~/shared/utils/handle-loader-error';
 import raindropLogo from '~/features/raindrop/raindrop.svg';
+import { DeleteUserModalDialog } from '~/features/user/components/delete-user-modal-dialog';
 
 type LoaderData = {
   me: User;
@@ -27,6 +29,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 const RaindropIntegratePage: FC = () => {
+  const [isOpenDeleteUserDialog, setOpenDeleteUserDialog] = useState(false);
   const { me } = useLoaderData<LoaderData>();
   const integrateRaindrop = useCallback(() => {
     location.href = '/api/raindrop/authorize';
@@ -51,7 +54,18 @@ const RaindropIntegratePage: FC = () => {
         </button>
       </div>
 
-      <Profile me={me} />
+      <Profile
+        me={me}
+        onOpenDeleteUserDialog={() => {
+          setOpenDeleteUserDialog(true);
+        }}
+      />
+      <DeleteUserModalDialog
+        isOpen={isOpenDeleteUserDialog}
+        onClose={() => {
+          setOpenDeleteUserDialog(false);
+        }}
+      />
     </main>
   );
 };
