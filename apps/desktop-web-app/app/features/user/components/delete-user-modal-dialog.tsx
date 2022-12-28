@@ -1,5 +1,6 @@
 import { useNavigate } from '@remix-run/react';
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback, useState } from 'react';
 import { Trash2 } from 'react-feather';
 import { Button } from '~/shared/components/button';
@@ -8,7 +9,7 @@ import { Dialog } from '~/shared/components/dialog';
 export const DeleteUserModalDialog: FC<{
   isOpen: boolean;
   onClose: () => void;
-}> = ({ isOpen, onClose }) => {
+}> = memo(function DeleteUserModalDialog({ isOpen, onClose }) {
   const [isDeleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
@@ -59,4 +60,4 @@ export const DeleteUserModalDialog: FC<{
       </div>
     </Dialog>
   );
-};
+});

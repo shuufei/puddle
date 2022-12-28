@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from 'react';
+import { memo } from 'react';
 import { useRadioGroup } from 'react-aria';
 import { useRadioGroupState } from 'react-stately';
 import { RadioContext } from './radio-context';
@@ -8,7 +9,7 @@ export const RadioGroup: FC<{
   label: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
-}> = ({ children, label, defaultValue, onChange }) => {
+}> = memo(function RadioGroup({ children, label, defaultValue, onChange }) {
   const state = useRadioGroupState({ label, defaultValue, onChange });
   const { radioGroupProps, labelProps } = useRadioGroup({ label }, state);
   return (
@@ -21,4 +22,4 @@ export const RadioGroup: FC<{
       </RadioContext.Provider>
     </div>
   );
-};
+});

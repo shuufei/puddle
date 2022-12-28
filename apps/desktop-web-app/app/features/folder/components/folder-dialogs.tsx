@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from '@remix-run/react';
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback } from 'react';
 import { useContext } from 'react';
 import type { Folder } from '~/domain/folder';
@@ -31,14 +32,14 @@ export const FolderDialogs: FC<{
   onCloseCreateFolderDialog: () => void;
   onCloseEditFolderDialog: () => void;
   onCloseDeleteFolderDialog: () => void;
-}> = ({
+}> = memo(function FolderDialogs({
   createFolderDialogState,
   editFolderDialogState,
   deleteFolderDialogState,
   onCloseCreateFolderDialog,
   onCloseEditFolderDialog,
   onCloseDeleteFolderDialog,
-}) => {
+}) {
   const { collections } = useContext(CollectionsStateContext);
   const navigate = useNavigate();
   const params = useParams();
@@ -88,4 +89,4 @@ export const FolderDialogs: FC<{
       )}
     </>
   );
-};
+});

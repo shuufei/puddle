@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback, useState } from 'react';
 import { Trash2 } from 'react-feather';
 import type { Folder } from '~/domain/folder';
@@ -12,7 +13,12 @@ export const DeleteFolderModalDialog: FC<{
   isOpen: boolean;
   hasSubFolders?: boolean;
   onClose: () => void;
-}> = ({ folder, isOpen, hasSubFolders = false, onClose }) => {
+}> = memo(function DeleteFolderModalDialog({
+  folder,
+  isOpen,
+  hasSubFolders = false,
+  onClose,
+}) {
   const [isDeleting, setDeleting] = useState(false);
 
   const deleteFolder = useCallback(async () => {
@@ -82,4 +88,4 @@ export const DeleteFolderModalDialog: FC<{
       </div>
     </Dialog>
   );
-};
+});

@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from 'react';
+import { memo } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { X } from 'react-feather';
 
@@ -22,7 +23,7 @@ export const Dialog: FC<{
   titleIcon?: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-}> = ({ children, title, titleIcon, isOpen, onClose }) => {
+}> = memo(function Dialog({ children, title, titleIcon, isOpen, onClose }) {
   const [dialogTriggerElement, setDialogTriggerElement] =
     useState<HTMLElement>();
   const titleId = useMemo(() => `create-folder-dialog-title`, []);
@@ -134,12 +135,7 @@ export const Dialog: FC<{
     dialogTriggerElement?.focus();
     removeEventListeners();
     changeBackgroundScrollBehavior(false);
-  }, [
-    changeBackgroundScrollBehavior,
-    dialogTriggerElement,
-    isOpen,
-    removeEventListeners,
-  ]);
+  }, [changeBackgroundScrollBehavior, dialogTriggerElement, isOpen, removeEventListeners]);
 
   if (!isOpen) {
     return null;
@@ -184,4 +180,4 @@ export const Dialog: FC<{
       </div>
     </>
   );
-};
+});

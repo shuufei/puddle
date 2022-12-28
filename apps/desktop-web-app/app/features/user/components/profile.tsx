@@ -1,5 +1,6 @@
 import { useNavigate } from '@remix-run/react';
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback } from 'react';
 import type { User } from '~/domain/user';
 import { Menu } from '~/shared/components/menu';
@@ -8,7 +9,7 @@ import { MenuContentItemButton } from '~/shared/components/menu/menu-content-ite
 export const Profile: FC<{
   me: User;
   onOpenDeleteUserDialog: () => void;
-}> = ({ me, onOpenDeleteUserDialog }) => {
+}> = memo(function Profile({ me, onOpenDeleteUserDialog }) {
   const navigate = useNavigate();
 
   const signOut = useCallback(async () => {
@@ -54,4 +55,4 @@ export const Profile: FC<{
       </div>
     </div>
   );
-};
+});

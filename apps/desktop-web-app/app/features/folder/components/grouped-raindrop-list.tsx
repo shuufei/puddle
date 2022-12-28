@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useMemo } from 'react';
 import type { Folder } from '~/domain/folder';
 import type { Item } from '~/domain/raindrop/item';
@@ -13,7 +14,7 @@ export const GroupedRaindropList: FC<{
   items: Item[];
   folder: Folder;
   groupKey: GroupKey;
-}> = ({ items, folder, groupKey }) => {
+}> = memo(function GroupedRaindropList({ items, folder, groupKey }) {
   const grouped: (readonly [string, Item[]])[] = useMemo(() => {
     switch (groupKey) {
       case 'subTag':
@@ -97,4 +98,4 @@ export const GroupedRaindropList: FC<{
       })}
     </>
   );
-};
+});

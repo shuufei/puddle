@@ -1,10 +1,11 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import type { Item } from '~/domain/raindrop/item';
 import { Heart } from 'react-feather';
 
 export const RaindropListItem: FC<{
   raindropItem: Item;
-}> = ({ raindropItem }) => {
+}> = memo(function RaindropListItem({ raindropItem }) {
   return (
     <a
       href={raindropItem.link}
@@ -30,4 +31,4 @@ export const RaindropListItem: FC<{
       </div>
     </a>
   );
-};
+});
