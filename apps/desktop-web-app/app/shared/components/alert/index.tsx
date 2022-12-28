@@ -17,7 +17,7 @@ export const Alert: FC<{}> = memo(function Alert() {
     if (show) {
       id = setTimeout(() => {
         setAlert(undefined);
-      }, 5000);
+      }, 3000);
     }
     return () => {
       id && clearTimeout(id);
