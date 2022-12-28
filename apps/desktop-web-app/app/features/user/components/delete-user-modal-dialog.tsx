@@ -1,8 +1,10 @@
 import { useNavigate } from '@remix-run/react';
 import type { FC } from 'react';
+import { useContext } from 'react';
 import { memo } from 'react';
 import { useCallback, useState } from 'react';
 import { Trash2 } from 'react-feather';
+import { AlertContext } from '~/shared/components/alert/alert-context';
 import { Button } from '~/shared/components/button';
 import { Dialog } from '~/shared/components/dialog';
 
@@ -12,14 +14,31 @@ export const DeleteUserModalDialog: FC<{
 }> = memo(function DeleteUserModalDialog({ isOpen, onClose }) {
   const [isDeleting, setDeleting] = useState(false);
   const navigate = useNavigate();
+  const { setAlert } = useContext(AlertContext);
 
   const deleteUser = useCallback(async () => {
-    setDeleting(true);
-    await fetch('/api/users/delete', { method: 'POST' });
-    onClose();
-    setDeleting(false);
-    navigate('/');
-  }, [navigate, onClose]);
+    try {
+      setDeleting(true);
+      await fetch('/api/users/delete', { method: 'POST' });
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'アカウントを削除しました',
+        status: 'info',
+      });
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } catch (error) {
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'アカウントの削除に失敗しました',
+        status: 'error',
+      });
+    } finally {
+      onClose();
+      setDeleting(false);
+    }
+  }, [navigate, onClose, setAlert]);
 
   return (
     <Dialog

@@ -1,10 +1,12 @@
 import type { FC } from 'react';
+import { useContext } from 'react';
 import { memo } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import type { CreateFolderRequestBody } from '~/routes/api/folders';
+import { AlertContext } from '~/shared/components/alert/alert-context';
 import { Button } from '~/shared/components/button';
 import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
@@ -43,6 +45,7 @@ export const CreateFolderModalDialog: FC<{
     useState<string>(ALL_COLLECTION_VALUE);
   const [includeImportant, setIncludeImportant] = useState(false);
   const [isCreating, setCreating] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const closeDialog = useCallback(() => {
     onClose();
@@ -53,35 +56,48 @@ export const CreateFolderModalDialog: FC<{
   }, [onClose]);
 
   const createFolder = useCallback(async () => {
-    setCreating(true);
-    const tags =
-      tagValueRef.current
-        ?.split('#')
-        .map((v) => {
-          return v.trim().replace(/"/g, '');
-        })
-        .filter((v) => v) ?? [];
-    console.log(tags);
-    const endpoint = window.ENV.endpoint;
-    const body: CreateFolderRequestBody = {
-      title: titleValueRef.current ?? '', // TODO: required
-      collectionId:
-        collectionId !== ALL_COLLECTION_VALUE
-          ? Number(collectionId)
-          : undefined, // TODO: validate number
-      tags: tags,
-      include_important: includeImportant,
-      tags_or_search: false,
-      parent_folder_id: parentFolder?.id,
-    };
-    const res = await fetch(`${endpoint}/api/folders`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    console.log(res.status);
-    closeDialog();
-    setCreating(false);
-  }, [closeDialog, collectionId, includeImportant, parentFolder?.id]);
+    try {
+      setCreating(true);
+      const tags =
+        tagValueRef.current
+          ?.split('#')
+          .map((v) => {
+            return v.trim().replace(/"/g, '');
+          })
+          .filter((v) => v) ?? [];
+      console.log(tags);
+      const endpoint = window.ENV.endpoint;
+      const body: CreateFolderRequestBody = {
+        title: titleValueRef.current ?? '', // TODO: required
+        collectionId:
+          collectionId !== ALL_COLLECTION_VALUE
+            ? Number(collectionId)
+            : undefined, // TODO: validate number
+        tags: tags,
+        include_important: includeImportant,
+        tags_or_search: false,
+        parent_folder_id: parentFolder?.id,
+      };
+      await fetch(`${endpoint}/api/folders`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: '新しいフォルダを作成しました',
+        status: 'info',
+      });
+    } catch (error) {
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'フォルダが作成に失敗しました',
+        status: 'error',
+      });
+    } finally {
+      closeDialog();
+      setCreating(false);
+    }
+  }, [closeDialog, collectionId, includeImportant, parentFolder?.id, setAlert]);
 
   return (
     <Dialog

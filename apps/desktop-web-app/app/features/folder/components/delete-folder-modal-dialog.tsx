@@ -1,9 +1,11 @@
 import type { FC } from 'react';
+import { useContext } from 'react';
 import { memo } from 'react';
 import { useCallback, useState } from 'react';
 import { Trash2 } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { DeleteFolderRequestBody } from '~/routes/api/folders/$folderId';
+import { AlertContext } from '~/shared/components/alert/alert-context';
 import { Button } from '~/shared/components/button';
 import { Dialog } from '~/shared/components/dialog';
 import { FolderConditions } from './folder-conditions';
@@ -20,20 +22,35 @@ export const DeleteFolderModalDialog: FC<{
   onClose,
 }) {
   const [isDeleting, setDeleting] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const deleteFolder = useCallback(async () => {
-    setDeleting(true);
-    const endpoint = window.ENV.endpoint;
-    const body: DeleteFolderRequestBody = {
-      method: 'DELETE',
-    };
-    await fetch(`${endpoint}/api/folders/${folder.id}`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    onClose();
-    setDeleting(false);
-  }, [folder.id, onClose]);
+    try {
+      setDeleting(true);
+      const endpoint = window.ENV.endpoint;
+      const body: DeleteFolderRequestBody = {
+        method: 'DELETE',
+      };
+      await fetch(`${endpoint}/api/folders/${folder.id}`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'フォルダを削除しました',
+        status: 'info',
+      });
+    } catch (error) {
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'フォルダの削除に失敗しました',
+        status: 'error',
+      });
+    } finally {
+      onClose();
+      setDeleting(false);
+    }
+  }, [folder.id, onClose, setAlert]);
 
   return (
     <Dialog

@@ -1,10 +1,12 @@
 import type { FC } from 'react';
+import { useContext } from 'react';
 import { memo } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import type { UpdateFolderRequestBody } from '~/routes/api/folders/$folderId';
+import { AlertContext } from '~/shared/components/alert/alert-context';
 import { Button } from '~/shared/components/button';
 import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
@@ -52,41 +54,57 @@ export const EditFolderModalDialog: FC<{
     folder.include_important
   );
   const [isUpdating, setUpdating] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const editFolder = useCallback(async () => {
-    setUpdating(true);
-    const tags =
-      tagValueRef.current
-        ?.split('#')
-        .map((v) => {
-          return v.trim().replace(/"/g, '');
-        })
-        .filter((v) => v) ?? [];
-    console.log(tags);
-    const endpoint = window.ENV.endpoint;
-    const updated: Folder = {
-      ...folder,
-      title: titleValueRef.current,
-      collectionId:
-        collectionId !== ALL_COLLECTION_VALUE
-          ? Number(collectionId)
-          : undefined, // TODO: validate number
-      tags: tags,
-      include_important: includeImportant,
-      tags_or_search: false,
-    };
-    const body: UpdateFolderRequestBody = {
-      method: 'PUT',
-      folder: updated,
-    };
-    const res = await fetch(`${endpoint}/api/folders/${folder.id}`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    console.log(res.status);
-    onClose();
-    setUpdating(false);
-  }, [collectionId, folder, includeImportant, onClose]);
+    try {
+      setUpdating(true);
+      const tags =
+        tagValueRef.current
+          ?.split('#')
+          .map((v) => {
+            return v.trim().replace(/"/g, '');
+          })
+          .filter((v) => v) ?? [];
+      console.log(tags);
+      const endpoint = window.ENV.endpoint;
+      const updated: Folder = {
+        ...folder,
+        title: titleValueRef.current,
+        collectionId:
+          collectionId !== ALL_COLLECTION_VALUE
+            ? Number(collectionId)
+            : undefined, // TODO: validate number
+        tags: tags,
+        include_important: includeImportant,
+        tags_or_search: false,
+      };
+      const body: UpdateFolderRequestBody = {
+        method: 'PUT',
+        folder: updated,
+      };
+      const res = await fetch(`${endpoint}/api/folders/${folder.id}`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      console.log(res.status);
+
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'フォルダの条件を更新しました',
+        status: 'info',
+      });
+    } catch (error) {
+      setAlert({
+        id: String(new Date().valueOf()),
+        message: 'フォルダの更新に失敗しました',
+        status: 'error',
+      });
+    } finally {
+      onClose();
+      setUpdating(false);
+    }
+  }, [collectionId, folder, includeImportant, onClose, setAlert]);
 
   return (
     <Dialog
