@@ -14,13 +14,19 @@ export type CreateFolderRequestBody = Pick<
 >;
 
 export const action: ActionFunction = async ({ request }) => {
-  const { id: userId } = await getRequestUser(request);
-  const body = await request.json<CreateFolderRequestBody>();
-  await insertFolder({
-    ...body,
-    user_id: userId,
-  });
-  return new Response(null, {
-    status: 201,
-  });
+  try {
+    const { id: userId } = await getRequestUser(request);
+    const body = await request.json<CreateFolderRequestBody>();
+    await insertFolder({
+      ...body,
+      user_id: userId,
+    });
+    return new Response(null, {
+      status: 201,
+    });
+  } catch (error) {
+    const message = `failed /api/folders`;
+    console.error(message, error);
+    return new Response(JSON.stringify({ message }), { status: 500 });
+  }
 };

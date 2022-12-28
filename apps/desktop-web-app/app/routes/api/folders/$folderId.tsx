@@ -11,32 +11,43 @@ export type UpdateFolderRequestBody = { method: 'PUT' } & {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const { id: userId } = await getRequestUser(request);
-  const folderId = Number(params.folderId);
-  if (folderId == null || Number.isNaN(folderId)) {
-    return new Response(null, {
-      status: 400,
-    });
-  }
-  const body = await request.json<
-    DeleteFolderRequestBody | UpdateFolderRequestBody
-  >();
-  switch (body.method) {
-    case 'DELETE':
-      await deleteFolder(folderId, userId);
+  try {
+    const { id: userId } = await getRequestUser(request);
+    const folderId = Number(params.folderId);
+    if (folderId == null || Number.isNaN(folderId)) {
       return new Response(null, {
-        status: 204,
+        status: 400,
       });
-    case 'PUT':
-      await updateFolder(body.folder, userId);
-      const cacheKey = `users/${userId}/folder/${folderId}/items`;
-      await RAINDROP_CACHE.delete(cacheKey);
-      return new Response(null, {
-        status: 204,
-      });
-    default:
-      return new Response(null, {
-        status: 405,
-      });
+    }
+    const body = await request.json<
+      DeleteFolderRequestBody | UpdateFolderRequestBody
+    >();
+    switch (body.method) {
+      case 'DELETE':
+        await deleteFolder(folderId, userId);
+        return new Response(null, {
+          status: 204,
+        });
+      case 'PUT':
+        await updateFolder(body.folder, userId);
+        const cacheKey = `users/${userId}/folder/${folderId}/items`;
+        await RAINDROP_CACHE.delete(cacheKey);
+        return new Response(null, {
+          status: 204,
+        });
+      default:
+        return new Response(null, {
+          status: 405,
+        });
+    }
+  } catch (error) {
+    const message = `failed /api/folders/${params.fodlerId} action`;
+    console.error(message, error);
+    return new Response(
+      JSON.stringify({
+        message,
+      }),
+      { status: 500 }
+    );
   }
 };

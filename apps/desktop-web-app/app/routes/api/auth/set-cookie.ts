@@ -30,31 +30,41 @@ const parseToken = (
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const body = await request.json<{ hash: string }>();
-  const { accessToken, expires, refreshToken, tokenType } = parseToken(
-    body.hash
-  );
+  try {
+    const body = await request.json<{ hash: string }>();
+    const { accessToken, expires, refreshToken, tokenType } = parseToken(
+      body.hash
+    );
 
-  const headers = new Headers();
-  const sevenDaysMilliSec = 60 * 60 * 1000 * 24 * 7;
-  const options = {
-    // NOTE: refresh tokenの失効期限をexpiresとする(7日)。access tokenが失効したらrefreshさせる
-    expires: new Date(Date.now() + Number(expires) * 1000 + sevenDaysMilliSec),
-  };
+    const headers = new Headers();
+    const sevenDaysMilliSec = 60 * 60 * 1000 * 24 * 7;
+    const options = {
+      // NOTE: refresh tokenの失効期限をexpiresとする(7日)。access tokenが失効したらrefreshさせる
+      expires: new Date(
+        Date.now() + Number(expires) * 1000 + sevenDaysMilliSec
+      ),
+    };
 
-  headers.append(
-    'Set-Cookie',
-    await accessTokenCookie.serialize(accessToken, options)
-  );
-  headers.append(
-    'Set-Cookie',
-    await refreshTokenCookie.serialize(refreshToken, options)
-  );
-  headers.append(
-    'Set-Cookie',
-    await tokenTypeCookie.serialize(tokenType, options)
-  );
-  return new Response(null, {
-    headers,
-  });
+    headers.append(
+      'Set-Cookie',
+      await accessTokenCookie.serialize(accessToken, options)
+    );
+    headers.append(
+      'Set-Cookie',
+      await refreshTokenCookie.serialize(refreshToken, options)
+    );
+    headers.append(
+      'Set-Cookie',
+      await tokenTypeCookie.serialize(tokenType, options)
+    );
+    return new Response(null, {
+      headers,
+    });
+  } catch (error) {
+    const message = `failed /api/auth/set-cookie`;
+    console.error(message, error);
+    return new Response(JSON.stringify({ message }), {
+      status: 500,
+    });
+  }
 };
