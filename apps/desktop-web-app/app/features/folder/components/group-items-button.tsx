@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useState } from 'react';
 import { Popup } from '~/shared/components/popup';
 import { Radio } from '~/shared/components/radio/radio';
@@ -16,7 +17,7 @@ export const GroupItemsButton: FC<{
   groupKey: GroupKey;
   defaultGroupKey: GroupKey;
   onChange: (key: GroupKey) => void;
-}> = ({ groupKey, defaultGroupKey, onChange }) => {
+}> = memo(function GroupItemsButton({ groupKey, defaultGroupKey, onChange }) {
   const [isOpenGroupPopup, setOpenGroupPopup] = useState(false);
   return (
     <Popup
@@ -56,4 +57,4 @@ export const GroupItemsButton: FC<{
       </div>
     </Popup>
   );
-};
+});

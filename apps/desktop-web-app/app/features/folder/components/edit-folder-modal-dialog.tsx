@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
@@ -19,7 +20,13 @@ export const EditFolderModalDialog: FC<{
   folder: Folder;
   parentFolder?: Folder;
   onClose: () => void;
-}> = ({ collections, isOpen, folder, parentFolder, onClose }) => {
+}> = memo(function EditFolderModalDialog({
+  collections,
+  isOpen,
+  folder,
+  parentFolder,
+  onClose,
+}) {
   const defaultTags = useMemo(() => {
     return folder.tags.map((v) => `#${v}`).join(' ');
   }, [folder.tags]);
@@ -151,4 +158,4 @@ export const EditFolderModalDialog: FC<{
       </div>
     </Dialog>
   );
-};
+});

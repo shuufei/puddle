@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
@@ -18,7 +19,12 @@ export const CreateFolderModalDialog: FC<{
   isOpen: boolean;
   parentFolder?: Folder;
   onClose: () => void;
-}> = ({ collections, isOpen, parentFolder, onClose }) => {
+}> = memo(function CreateFolderModalDialog({
+  collections,
+  isOpen,
+  parentFolder,
+  onClose,
+}) {
   const options: SelectOption[] = [
     {
       value: ALL_COLLECTION_VALUE,
@@ -140,4 +146,4 @@ export const CreateFolderModalDialog: FC<{
       </div>
     </Dialog>
   );
-};
+});

@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useState } from 'react';
 import { ArrowDown } from 'react-feather';
 import { Popup } from '~/shared/components/popup';
@@ -19,7 +20,12 @@ export const SortItemsButton: FC<{
   defaultSortKey: SortKey;
   disabled?: boolean;
   onChange: (key: SortKey) => void;
-}> = ({ sortKey, defaultSortKey, disabled = false, onChange }) => {
+}> = memo(function SortItemsBUtton({
+  sortKey,
+  defaultSortKey,
+  disabled = false,
+  onChange,
+}) {
   const [isOpenSortPopup, setOpenSortPopup] = useState(false);
   return (
     <Popup
@@ -61,4 +67,4 @@ export const SortItemsButton: FC<{
       </div>
     </Popup>
   );
-};
+});

@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useCallback } from 'react';
 import { getSupabaseForBrowser } from '~/libs/supabase/supabase-client';
 import googleLogo from './g-logo.png';
@@ -9,7 +10,7 @@ export const SignInWithGoogleButton: FC<{
     supabaseAnonKey: string;
     endpoint: string;
   };
-}> = ({ supabaseConfig }) => {
+}> = memo(function SignInWithGoogleButton({ supabaseConfig }) {
   const { supabaseUrl, supabaseAnonKey, endpoint } = supabaseConfig;
   const signInWithGoogle = useCallback(async () => {
     const supabase = getSupabaseForBrowser(supabaseUrl, supabaseAnonKey);
@@ -30,4 +31,4 @@ export const SignInWithGoogleButton: FC<{
       <span className="text-gray-900 font-semibold">Signin With Google</span>
     </button>
   );
-};
+});

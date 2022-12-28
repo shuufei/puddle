@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { Edit2, FolderPlus, Trash2 } from 'react-feather';
 import type { MenuPorps } from '~/shared/components/menu';
 import { Menu } from '~/shared/components/menu';
@@ -10,7 +11,12 @@ export const FolderMenu: FC<
     onClickEditMenu: () => void;
     onClickDeleteMenu: () => void;
   }
-> = ({ position, onClickCreateMenu, onClickEditMenu, onClickDeleteMenu }) => {
+> = memo(function FolderMenu({
+  position,
+  onClickCreateMenu,
+  onClickEditMenu,
+  onClickDeleteMenu,
+}) {
   return (
     <Menu position={position}>
       <div className="flex flex-col gap-1">
@@ -41,4 +47,4 @@ export const FolderMenu: FC<
       </div>
     </Menu>
   );
-};
+});

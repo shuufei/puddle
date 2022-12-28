@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useRef } from 'react';
 import { useTextField } from 'react-aria';
 
@@ -8,7 +9,13 @@ export const TextField: FC<{
   placeholder?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
-}> = ({ label, description, placeholder, defaultValue, onChange }) => {
+}> = memo(function TextField({
+  label,
+  description,
+  placeholder,
+  defaultValue,
+  onChange,
+}) {
   const inputRef = useRef(null);
   const { labelProps, inputProps, descriptionProps } = useTextField(
     {
@@ -38,4 +45,4 @@ export const TextField: FC<{
       )}
     </div>
   );
-};
+});

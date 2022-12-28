@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { memo } from 'react';
 import { useField } from 'react-aria';
 
 export type SelectOption = {
@@ -11,7 +12,7 @@ export const SelectBox: FC<{
   options: SelectOption[];
   defaultValue?: SelectOption['value'];
   onChange?: (value: SelectOption['value']) => void;
-}> = ({ label, options, defaultValue, onChange }) => {
+}> = memo(function SelectBox({ label, options, defaultValue, onChange }) {
   const { labelProps, fieldProps } = useField({ label });
   return (
     <div className="flex flex-col gap-1">
@@ -36,4 +37,4 @@ export const SelectBox: FC<{
       </select>
     </div>
   );
-};
+});
