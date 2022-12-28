@@ -7,3 +7,4 @@ declare const ENDPOINT: string;
 declare const RAINDROP_CACHE: KVNamespace;
 declare const ENABLED_APP: 'true' | 'false';
 declare const EXPIRED_ACCESS_TOKEN: string | undefined;
+declare const PUDDLE_ACCESS_TOKEN: string | undefined;

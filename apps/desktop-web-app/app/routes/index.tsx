@@ -3,6 +3,7 @@ import { redirect } from '@remix-run/cloudflare';
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 import { useEffect } from 'react';
+import { isEnablePuddleApp } from '~/features/auth/is-enable-puddle-app';
 import { useSetCookieIfNeeded } from '~/shared/hooks/use-set-cookie-if-needed';
 
 type LoaderData = {
@@ -14,7 +15,8 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  if (ENABLED_APP === 'false') {
+  const isEnableApp = await isEnablePuddleApp(request);
+  if (!isEnableApp) {
     return redirect('/service-suspended');
   }
   const data: LoaderData = {

@@ -28,3 +28,8 @@ export const raindropTokenExpires = createCookie(
   'RaindropTokenExpires',
   cookieOptions
 );
+
+export const puddleAccessTokenCookie = createCookie(
+  'PuddleAccessToken',
+  cookieOptions
+);

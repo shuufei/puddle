@@ -11,7 +11,7 @@ kv_namespaces = [
 
 [vars]
 ENDPOINT = "http://localhost:4200"
-ENABLED_APP = 'true'
+ENABLED_APP = 'false'
 
 [site]
   bucket = "./public"

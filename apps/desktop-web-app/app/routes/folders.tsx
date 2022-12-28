@@ -16,6 +16,7 @@ import { ExpiredAccessToken } from '~/errors/expired-access-token';
 import { refreshTokenCookie } from '~/features/auth/cookies';
 import { getRequestRaindropAccessToken } from '~/features/auth/get-request-raindrop-access-token.server';
 import { getRequestUser } from '~/features/auth/get-request-user.server';
+import { isEnablePuddleApp } from '~/features/auth/is-enable-puddle-app';
 import { refreshAccessToken } from '~/features/auth/refresh.server';
 import { getCollections } from '~/features/folder/api/get-collections.server';
 import { getFolders } from '~/features/folder/api/get-folders.server';
@@ -42,7 +43,8 @@ export type FoldersLoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  if (ENABLED_APP === 'false') {
+  const isEnableApp = await isEnablePuddleApp(request);
+  if (!isEnableApp) {
     return redirect('/service-suspended');
   }
   try {
