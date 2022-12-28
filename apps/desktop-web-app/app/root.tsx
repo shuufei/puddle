@@ -13,7 +13,11 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from '@remix-run/react';
+import { useState } from 'react';
 import { SSRProvider } from 'react-aria';
+import { Alert } from './shared/components/alert';
+import type { AlertData } from './shared/components/alert/alert-context';
+import { AlertContext } from './shared/components/alert/alert-context';
 
 import styles from './tailwind.css';
 
@@ -42,6 +46,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function App() {
   const data = useLoaderData<LoaderData>();
+  const [alertData, setAlertData] = useState<AlertData | undefined>();
   return (
     <html lang="ja">
       <head>
@@ -50,7 +55,17 @@ export default function App() {
       </head>
       <body>
         <SSRProvider>
-          <Outlet />
+          <AlertContext.Provider
+            value={{
+              alert: alertData,
+              setAlert: (data) => {
+                setAlertData(data);
+              },
+            }}
+          >
+            <Outlet />
+            <Alert />
+          </AlertContext.Provider>
         </SSRProvider>
         <script
           dangerouslySetInnerHTML={{

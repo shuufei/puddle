@@ -1,10 +1,12 @@
 import type { FC } from 'react';
+import { useContext } from 'react';
 import { memo } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Folder as FolderIcon } from 'react-feather';
 import type { Folder } from '~/domain/folder';
 import type { Collection } from '~/domain/raindrop/collection';
 import type { UpdateFolderRequestBody } from '~/routes/api/folders/$folderId';
+import { AlertContext } from '~/shared/components/alert/alert-context';
 import { Button } from '~/shared/components/button';
 import { Checkbox } from '~/shared/components/checkbox';
 import { Dialog } from '~/shared/components/dialog';
@@ -52,6 +54,7 @@ export const EditFolderModalDialog: FC<{
     folder.include_important
   );
   const [isUpdating, setUpdating] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const editFolder = useCallback(async () => {
     setUpdating(true);
@@ -86,7 +89,12 @@ export const EditFolderModalDialog: FC<{
     console.log(res.status);
     onClose();
     setUpdating(false);
-  }, [collectionId, folder, includeImportant, onClose]);
+    setAlert({
+      id: String(new Date().valueOf()),
+      message: 'フォルダの条件を更新しました',
+      status: 'info',
+    });
+  }, [collectionId, folder, includeImportant, onClose, setAlert]);
 
   return (
     <Dialog
